@@ -1,2 +1,2 @@
-# TGN-Solutions
+# TGNSolutions
 Proyecto TGN
