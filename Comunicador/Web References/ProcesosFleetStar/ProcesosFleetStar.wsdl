@@ -1,0 +1,1107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://consware.com.co" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://consware.com.co" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://consware.com.co">
+      <s:element name="RegistrarInicioTurno">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="turno" type="tns:Turno" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Turno">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:InformacionEDS">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="CodigoTurno" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="IdentificacionVendedor" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TotalConsignado" type="s:double" />
+              <s:element minOccurs="0" maxOccurs="1" name="PosicionesTurno" type="tns:ArrayOfPosicionTurno" />
+              <s:element minOccurs="1" maxOccurs="1" name="FechaHora" type="s:dateTime" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="InformacionEDS" abstract="true">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoEDS" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfPosicionTurno">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PosicionTurno" nillable="true" type="tns:PosicionTurno" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="PosicionTurno">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoPosicion" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Lectura" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Precio" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegistrarInicioTurnoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegistrarInicioTurnoResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResultadoSolicitud">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Mensaje" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Estado" type="tns:EstadoSolicitud" />
+          <s:element minOccurs="0" maxOccurs="1" name="Respuesta" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="EstadoSolicitud">
+        <s:restriction base="s:string">
+          <s:enumeration value="Procesado" />
+          <s:enumeration value="Error" />
+          <s:enumeration value="Ninguno" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="Credencial" type="tns:Credencial" />
+      <s:complexType name="Credencial">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Usuario" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Clave" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoEDS" type="s:string" />
+        </s:sequence>
+        <s:anyAttribute />
+      </s:complexType>
+      <s:element name="RegistrarCierreTurno">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="turno" type="tns:Turno" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrarCierreTurnoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegistrarCierreTurnoResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrarCorteTV">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="codigoEDS" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idCorteTV" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="fechaHoraInicioCorte" type="s:dateTime" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrarCorteTVResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegistrarCorteTVResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrarConsignacion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="consignacion" type="tns:Consignacion" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Consignacion">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:InformacionEDS">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="FechaHora" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="IdentificacionVendedor" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="Valor" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="esEliminar" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="RegistrarConsignacionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegistrarConsignacionResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AnularConsignacion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="consignacion" type="tns:Consignacion" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AnularConsignacionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="AnularConsignacionResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrarVentaCombustible">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="venta" type="tns:VentaCombustible" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="VentaCombustible">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Venta">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="CodigoPosicion" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="IdTurno" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="VentaManual" type="s:boolean" />
+              <s:element minOccurs="1" maxOccurs="1" name="FechaHoraInicio" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="FechaHoraFin" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="LecturaInicial" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="LecturaFinal" type="s:double" />
+              <s:element minOccurs="0" maxOccurs="1" name="Placa" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="Kilometraje" type="s:double" />
+              <s:element minOccurs="0" maxOccurs="1" name="NumeroManifiesto" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ResponsableCredito" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="PrecioVentaCliente" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="PrecioVentaEDS" type="s:double" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="Venta" abstract="true">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:InformacionEDS">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="IdTurnoHorario" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="IdCorteTV" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="NumeroDocumento" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="IdentificacionVendedor" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TotalVenta" type="s:double" />
+              <s:element minOccurs="0" maxOccurs="1" name="NumeroIdentificador" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="IdAutorizacion" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="FormasPago" type="tns:ArrayOfFormaPago" />
+              <s:element minOccurs="0" maxOccurs="1" name="DetalleVentaMaterial" type="tns:ArrayOfDetalleVentaMaterial" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfFormaPago">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FormaPago" nillable="true" type="tns:FormaPago" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FormaPago">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="CodigoSAP" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="CodigoSapNuevo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Nombre" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Valor" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroComprobante" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroAprobacion" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroDocumento" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfDetalleVentaMaterial">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="DetalleVentaMaterial" nillable="true" type="tns:DetalleVentaMaterial" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DetalleVentaMaterial">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoMaterial" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Cantidad" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Precio" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Total" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegistrarVentaCombustibleResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegistrarVentaCombustibleResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrarVentaCanastilla">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="venta" type="tns:VentaCanastilla" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="VentaCanastilla">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Venta">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="FechaHora" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="IdEntidadCliente" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="IdCliente" type="s:int" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="RegistrarVentaCanastillaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegistrarVentaCanastillaResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrarCambioFormaPago">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="cambioFormaPago" type="tns:CambioFormaPago" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="CambioFormaPago">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:InformacionEDS">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="FechaHora" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="IdentificacionVendedor" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NumeroDocumento" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="FormasPago" type="tns:ArrayOfFormaPago" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="RegistrarCambioFormaPagoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegistrarCambioFormaPagoResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrarIngresoCombustible">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ingresoCombustible" type="tns:IngresoInventarioCombustible" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="IngresoInventarioCombustible">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:InformacionEDS">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="CodigoTanque" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="Cantidad" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="FechaHoraIngreso" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="CompraBandera" type="tns:CompraBandera" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="CompraBandera">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroFactura" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroSICOM" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroDocumentoConductor" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PlacaVehiculo" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegistrarIngresoCombustibleResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegistrarIngresoCombustibleResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrarVariacionCombustible">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="variacion" type="tns:Variacion" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Variacion">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:InformacionEDS">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="FechaHora" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="CodigoTransaccion" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Detalles" type="tns:ArrayOfDetalleVariacion" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfDetalleVariacion">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="DetalleVariacion" nillable="true" type="tns:DetalleVariacion" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DetalleVariacion">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoTanque" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Volumen" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegistrarVariacionCombustibleResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegistrarVariacionCombustibleResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrarAlarma">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="alarma" type="tns:Alarma" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Alarma">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:InformacionEDS">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="CodigoTanque" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="FechaHoraAlarma" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="AlarmaProductoBajo" type="s:boolean" />
+              <s:element minOccurs="1" maxOccurs="1" name="AlarmaSobrellenado" type="s:boolean" />
+              <s:element minOccurs="1" maxOccurs="1" name="AlarmaFugaTanque" type="s:boolean" />
+              <s:element minOccurs="1" maxOccurs="1" name="AlarmaFugaLinea" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="RegistrarAlarmaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegistrarAlarmaResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CancelarVenta">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="codigoEDS" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="numeroDocumento" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="identificacionUsuario" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="observacion" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CancelarVentaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="CancelarVentaResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SolicitarAutorizacionCredito">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="solicitud" type="tns:SolicitudVentaCredito" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SolicitudVentaCredito">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:SolicitudCredito">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Placa" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="Kilometraje" type="s:double" />
+              <s:element minOccurs="0" maxOccurs="1" name="CodigoMaterial" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="RequiereAprobacion" type="s:boolean" />
+              <s:element minOccurs="1" maxOccurs="1" name="FechaSolicitud" type="s:dateTime" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="SolicitudCredito" abstract="true">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoEDS" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TipoIdentificador" type="tns:TipoIdentificador" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroIdentificador" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Manifiesto" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoPosicion" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="TipoIdentificador">
+        <s:restriction base="s:string">
+          <s:enumeration value="Chip" />
+          <s:enumeration value="Tag" />
+          <s:enumeration value="CodigoBarras" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ResultadoAutorizacion">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Manifiesto" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Tipo" type="tns:TipoTransaccion" />
+          <s:element minOccurs="1" maxOccurs="1" name="IdAutorizacion" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoCliente" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NombreCliente" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Placa" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Cupo" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Saldo" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="Mensaje" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Visita" type="tns:DetalleVisita" />
+          <s:element minOccurs="1" maxOccurs="1" name="Consumo" type="tns:DetalleConsumo" />
+          <s:element minOccurs="0" maxOccurs="1" name="Detalles" type="tns:ArrayOfDetalleMaterialCredito" />
+          <s:element minOccurs="1" maxOccurs="1" name="Descuento" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="PrecioVentaCliente" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="PrecioVentaEDS" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="ResponsableCredito" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ImprimirGuiaDespacho" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="UsaManifiesto" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="TipoTransaccion">
+        <s:restriction base="s:string">
+          <s:enumeration value="Niguna" />
+          <s:enumeration value="Credito" />
+          <s:enumeration value="Anticipo" />
+          <s:enumeration value="Control" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="DetalleVisita">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Dia" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Semana" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Mes" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DetalleConsumo">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Dia" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Semana" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Mes" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfDetalleMaterialCredito">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="DetalleMaterialCredito" nillable="true" type="tns:DetalleMaterialCredito" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DetalleMaterialCredito">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoMaterial" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Precio" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SolicitarAutorizacionCreditoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SolicitarAutorizacionCreditoResult" type="tns:ResultadoAutorizacion" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SolicitarAutorizacionCreditoCanastilla">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="solicitud" type="tns:SolicitudVentaCreditoCanastilla" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SolicitudVentaCreditoCanastilla">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:SolicitudCredito">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="CodigosMateriales" type="tns:ArrayOfString" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SolicitarAutorizacionCreditoCanastillaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SolicitarAutorizacionCreditoCanastillaResult" type="tns:ResultadoAutorizacion" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LiberarCupo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="codigoEDS" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idAutorizacion" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LiberarCupoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="LiberarCupoResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LiberarManifiesto">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="codigoEDS" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="manifiesto" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LiberarManifiestoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="LiberarManifiestoResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="RegistrarInicioTurnoSoapIn">
+    <wsdl:part name="parameters" element="tns:RegistrarInicioTurno" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarInicioTurnoSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrarInicioTurnoResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarInicioTurnoCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarCierreTurnoSoapIn">
+    <wsdl:part name="parameters" element="tns:RegistrarCierreTurno" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarCierreTurnoSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrarCierreTurnoResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarCierreTurnoCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarCorteTVSoapIn">
+    <wsdl:part name="parameters" element="tns:RegistrarCorteTV" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarCorteTVSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrarCorteTVResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarCorteTVCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarConsignacionSoapIn">
+    <wsdl:part name="parameters" element="tns:RegistrarConsignacion" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarConsignacionSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrarConsignacionResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarConsignacionCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="AnularConsignacionSoapIn">
+    <wsdl:part name="parameters" element="tns:AnularConsignacion" />
+  </wsdl:message>
+  <wsdl:message name="AnularConsignacionSoapOut">
+    <wsdl:part name="parameters" element="tns:AnularConsignacionResponse" />
+  </wsdl:message>
+  <wsdl:message name="AnularConsignacionCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarVentaCombustibleSoapIn">
+    <wsdl:part name="parameters" element="tns:RegistrarVentaCombustible" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarVentaCombustibleSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrarVentaCombustibleResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarVentaCombustibleCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarVentaCanastillaSoapIn">
+    <wsdl:part name="parameters" element="tns:RegistrarVentaCanastilla" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarVentaCanastillaSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrarVentaCanastillaResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarVentaCanastillaCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarCambioFormaPagoSoapIn">
+    <wsdl:part name="parameters" element="tns:RegistrarCambioFormaPago" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarCambioFormaPagoSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrarCambioFormaPagoResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarCambioFormaPagoCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarIngresoCombustibleSoapIn">
+    <wsdl:part name="parameters" element="tns:RegistrarIngresoCombustible" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarIngresoCombustibleSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrarIngresoCombustibleResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarIngresoCombustibleCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarVariacionCombustibleSoapIn">
+    <wsdl:part name="parameters" element="tns:RegistrarVariacionCombustible" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarVariacionCombustibleSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrarVariacionCombustibleResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarVariacionCombustibleCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarAlarmaSoapIn">
+    <wsdl:part name="parameters" element="tns:RegistrarAlarma" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarAlarmaSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrarAlarmaResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarAlarmaCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="CancelarVentaSoapIn">
+    <wsdl:part name="parameters" element="tns:CancelarVenta" />
+  </wsdl:message>
+  <wsdl:message name="CancelarVentaSoapOut">
+    <wsdl:part name="parameters" element="tns:CancelarVentaResponse" />
+  </wsdl:message>
+  <wsdl:message name="CancelarVentaCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="SolicitarAutorizacionCreditoSoapIn">
+    <wsdl:part name="parameters" element="tns:SolicitarAutorizacionCredito" />
+  </wsdl:message>
+  <wsdl:message name="SolicitarAutorizacionCreditoSoapOut">
+    <wsdl:part name="parameters" element="tns:SolicitarAutorizacionCreditoResponse" />
+  </wsdl:message>
+  <wsdl:message name="SolicitarAutorizacionCreditoCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="SolicitarAutorizacionCreditoCanastillaSoapIn">
+    <wsdl:part name="parameters" element="tns:SolicitarAutorizacionCreditoCanastilla" />
+  </wsdl:message>
+  <wsdl:message name="SolicitarAutorizacionCreditoCanastillaSoapOut">
+    <wsdl:part name="parameters" element="tns:SolicitarAutorizacionCreditoCanastillaResponse" />
+  </wsdl:message>
+  <wsdl:message name="SolicitarAutorizacionCreditoCanastillaCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="LiberarCupoSoapIn">
+    <wsdl:part name="parameters" element="tns:LiberarCupo" />
+  </wsdl:message>
+  <wsdl:message name="LiberarCupoSoapOut">
+    <wsdl:part name="parameters" element="tns:LiberarCupoResponse" />
+  </wsdl:message>
+  <wsdl:message name="LiberarCupoCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="LiberarManifiestoSoapIn">
+    <wsdl:part name="parameters" element="tns:LiberarManifiesto" />
+  </wsdl:message>
+  <wsdl:message name="LiberarManifiestoSoapOut">
+    <wsdl:part name="parameters" element="tns:LiberarManifiestoResponse" />
+  </wsdl:message>
+  <wsdl:message name="LiberarManifiestoCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:portType name="ProcesosControllerSoap">
+    <wsdl:operation name="RegistrarInicioTurno">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Inicia un nuevo turno en FleetStar.</wsdl:documentation>
+      <wsdl:input message="tns:RegistrarInicioTurnoSoapIn" />
+      <wsdl:output message="tns:RegistrarInicioTurnoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarCierreTurno">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registra el cierre de un turno iniciado previamente en FleetStar.</wsdl:documentation>
+      <wsdl:input message="tns:RegistrarCierreTurnoSoapIn" />
+      <wsdl:output message="tns:RegistrarCierreTurnoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarCorteTV">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registra el corte de la transportadora de valores para el registro y seguimiento de ventas.</wsdl:documentation>
+      <wsdl:input message="tns:RegistrarCorteTVSoapIn" />
+      <wsdl:output message="tns:RegistrarCorteTVSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarConsignacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registra los datos de consignación de un vendedor durante su turno activo.</wsdl:documentation>
+      <wsdl:input message="tns:RegistrarConsignacionSoapIn" />
+      <wsdl:output message="tns:RegistrarConsignacionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AnularConsignacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registra los datos de consignación de un vendedor durante su turno activo.</wsdl:documentation>
+      <wsdl:input message="tns:AnularConsignacionSoapIn" />
+      <wsdl:output message="tns:AnularConsignacionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarVentaCombustible">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registra las ventas de combustible en FleetStar.</wsdl:documentation>
+      <wsdl:input message="tns:RegistrarVentaCombustibleSoapIn" />
+      <wsdl:output message="tns:RegistrarVentaCombustibleSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarVentaCanastilla">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registra ventas de canastilla en FleetStar.</wsdl:documentation>
+      <wsdl:input message="tns:RegistrarVentaCanastillaSoapIn" />
+      <wsdl:output message="tns:RegistrarVentaCanastillaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarCambioFormaPago">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registra las formas de pago correspondiente a una venta previa.</wsdl:documentation>
+      <wsdl:input message="tns:RegistrarCambioFormaPagoSoapIn" />
+      <wsdl:output message="tns:RegistrarCambioFormaPagoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarIngresoCombustible">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registra los ingresos de combustible en FleetStar.</wsdl:documentation>
+      <wsdl:input message="tns:RegistrarIngresoCombustibleSoapIn" />
+      <wsdl:output message="tns:RegistrarIngresoCombustibleSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarVariacionCombustible">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registra la variación (medición de aforo) de combustible.</wsdl:documentation>
+      <wsdl:input message="tns:RegistrarVariacionCombustibleSoapIn" />
+      <wsdl:output message="tns:RegistrarVariacionCombustibleSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarAlarma">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registra las alarmas asociadas a los estadodos de los tanques de combustibles.</wsdl:documentation>
+      <wsdl:input message="tns:RegistrarAlarmaSoapIn" />
+      <wsdl:output message="tns:RegistrarAlarmaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CancelarVenta">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registra la solicitud de cancelación de una venta.</wsdl:documentation>
+      <wsdl:input message="tns:CancelarVentaSoapIn" />
+      <wsdl:output message="tns:CancelarVentaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SolicitarAutorizacionCredito">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Valida el uso de créditos con base en los datos suministrados.</wsdl:documentation>
+      <wsdl:input message="tns:SolicitarAutorizacionCreditoSoapIn" />
+      <wsdl:output message="tns:SolicitarAutorizacionCreditoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SolicitarAutorizacionCreditoCanastilla">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Solicita autorizacion de credito para venta de canastilla.</wsdl:documentation>
+      <wsdl:input message="tns:SolicitarAutorizacionCreditoCanastillaSoapIn" />
+      <wsdl:output message="tns:SolicitarAutorizacionCreditoCanastillaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="LiberarCupo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Libera un crédito reservado por una solictud de venta crédito previa.</wsdl:documentation>
+      <wsdl:input message="tns:LiberarCupoSoapIn" />
+      <wsdl:output message="tns:LiberarCupoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="LiberarManifiesto">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Libera un manifiesto reservado por una solictud de venta crédito previa.</wsdl:documentation>
+      <wsdl:input message="tns:LiberarManifiestoSoapIn" />
+      <wsdl:output message="tns:LiberarManifiestoSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ProcesosControllerSoap" type="tns:ProcesosControllerSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="RegistrarInicioTurno">
+      <soap:operation soapAction="http://consware.com.co/RegistrarInicioTurno" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RegistrarInicioTurnoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarCierreTurno">
+      <soap:operation soapAction="http://consware.com.co/RegistrarCierreTurno" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RegistrarCierreTurnoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarCorteTV">
+      <soap:operation soapAction="http://consware.com.co/RegistrarCorteTV" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RegistrarCorteTVCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarConsignacion">
+      <soap:operation soapAction="http://consware.com.co/RegistrarConsignacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RegistrarConsignacionCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AnularConsignacion">
+      <soap:operation soapAction="http://consware.com.co/AnularConsignacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:AnularConsignacionCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarVentaCombustible">
+      <soap:operation soapAction="http://consware.com.co/RegistrarVentaCombustible" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RegistrarVentaCombustibleCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarVentaCanastilla">
+      <soap:operation soapAction="http://consware.com.co/RegistrarVentaCanastilla" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RegistrarVentaCanastillaCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarCambioFormaPago">
+      <soap:operation soapAction="http://consware.com.co/RegistrarCambioFormaPago" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RegistrarCambioFormaPagoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarIngresoCombustible">
+      <soap:operation soapAction="http://consware.com.co/RegistrarIngresoCombustible" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RegistrarIngresoCombustibleCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarVariacionCombustible">
+      <soap:operation soapAction="http://consware.com.co/RegistrarVariacionCombustible" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RegistrarVariacionCombustibleCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarAlarma">
+      <soap:operation soapAction="http://consware.com.co/RegistrarAlarma" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RegistrarAlarmaCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CancelarVenta">
+      <soap:operation soapAction="http://consware.com.co/CancelarVenta" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:CancelarVentaCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitarAutorizacionCredito">
+      <soap:operation soapAction="http://consware.com.co/SolicitarAutorizacionCredito" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:SolicitarAutorizacionCreditoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitarAutorizacionCreditoCanastilla">
+      <soap:operation soapAction="http://consware.com.co/SolicitarAutorizacionCreditoCanastilla" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:SolicitarAutorizacionCreditoCanastillaCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LiberarCupo">
+      <soap:operation soapAction="http://consware.com.co/LiberarCupo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:LiberarCupoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LiberarManifiesto">
+      <soap:operation soapAction="http://consware.com.co/LiberarManifiesto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:LiberarManifiestoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ProcesosControllerSoap12" type="tns:ProcesosControllerSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="RegistrarInicioTurno">
+      <soap12:operation soapAction="http://consware.com.co/RegistrarInicioTurno" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RegistrarInicioTurnoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarCierreTurno">
+      <soap12:operation soapAction="http://consware.com.co/RegistrarCierreTurno" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RegistrarCierreTurnoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarCorteTV">
+      <soap12:operation soapAction="http://consware.com.co/RegistrarCorteTV" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RegistrarCorteTVCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarConsignacion">
+      <soap12:operation soapAction="http://consware.com.co/RegistrarConsignacion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RegistrarConsignacionCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AnularConsignacion">
+      <soap12:operation soapAction="http://consware.com.co/AnularConsignacion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:AnularConsignacionCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarVentaCombustible">
+      <soap12:operation soapAction="http://consware.com.co/RegistrarVentaCombustible" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RegistrarVentaCombustibleCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarVentaCanastilla">
+      <soap12:operation soapAction="http://consware.com.co/RegistrarVentaCanastilla" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RegistrarVentaCanastillaCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarCambioFormaPago">
+      <soap12:operation soapAction="http://consware.com.co/RegistrarCambioFormaPago" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RegistrarCambioFormaPagoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarIngresoCombustible">
+      <soap12:operation soapAction="http://consware.com.co/RegistrarIngresoCombustible" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RegistrarIngresoCombustibleCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarVariacionCombustible">
+      <soap12:operation soapAction="http://consware.com.co/RegistrarVariacionCombustible" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RegistrarVariacionCombustibleCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarAlarma">
+      <soap12:operation soapAction="http://consware.com.co/RegistrarAlarma" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RegistrarAlarmaCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CancelarVenta">
+      <soap12:operation soapAction="http://consware.com.co/CancelarVenta" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:CancelarVentaCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitarAutorizacionCredito">
+      <soap12:operation soapAction="http://consware.com.co/SolicitarAutorizacionCredito" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:SolicitarAutorizacionCreditoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitarAutorizacionCreditoCanastilla">
+      <soap12:operation soapAction="http://consware.com.co/SolicitarAutorizacionCreditoCanastilla" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:SolicitarAutorizacionCreditoCanastillaCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LiberarCupo">
+      <soap12:operation soapAction="http://consware.com.co/LiberarCupo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:LiberarCupoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LiberarManifiesto">
+      <soap12:operation soapAction="http://consware.com.co/LiberarManifiesto" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:LiberarManifiestoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ProcesosController">
+    <wsdl:port name="ProcesosControllerSoap" binding="tns:ProcesosControllerSoap">
+      <soap:address location="http://13.65.95.237:7878/TexacoServices/controller/procesoscontroller.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ProcesosControllerSoap12" binding="tns:ProcesosControllerSoap12">
+      <soap12:address location="http://13.65.95.237:7878/TexacoServices/controller/procesoscontroller.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

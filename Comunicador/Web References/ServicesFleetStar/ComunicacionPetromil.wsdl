@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="RegistrarVentaCombustible">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="venta" type="tns:VentaCombustible" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="VentaCombustible">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Venta">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="CodigoPosicion" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="IdTurno" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="VentaManual" type="s:boolean" />
+              <s:element minOccurs="1" maxOccurs="1" name="FechaHoraInicio" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="FechaHoraFin" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="LecturaInicial" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="LecturaFinal" type="s:double" />
+              <s:element minOccurs="0" maxOccurs="1" name="Placa" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="Kilometraje" type="s:double" />
+              <s:element minOccurs="0" maxOccurs="1" name="NumeroManifiesto" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ResponsableCredito" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="PrecioVentaCliente" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="PrecioVentaEDS" type="s:double" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="Venta" abstract="true">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:InformacionEDS">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="IdTurnoHorario" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="IdCorteTV" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="NumeroDocumento" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="IdentificacionVendedor" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TotalVenta" type="s:double" />
+              <s:element minOccurs="0" maxOccurs="1" name="NumeroIdentificador" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="IdAutorizacion" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="FormasPago" type="tns:ArrayOfFormaPago" />
+              <s:element minOccurs="0" maxOccurs="1" name="DetalleVentaMaterial" type="tns:ArrayOfDetalleVentaMaterial" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="InformacionEDS" abstract="true">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoEDS" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfFormaPago">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FormaPago" nillable="true" type="tns:FormaPago" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FormaPago">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="CodigoSAP" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="CodigoSapNuevo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Nombre" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Valor" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroComprobante" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroAprobacion" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroDocumento" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfDetalleVentaMaterial">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="DetalleVentaMaterial" nillable="true" type="tns:DetalleVentaMaterial" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DetalleVentaMaterial">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoMaterial" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Cantidad" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Precio" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Total" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegistrarVentaCombustibleResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegistrarVentaCombustibleResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResultadoSolicitud">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Mensaje" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Estado" type="tns:EstadoSolicitud" />
+          <s:element minOccurs="0" maxOccurs="1" name="Respuesta" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="EstadoSolicitud">
+        <s:restriction base="s:string">
+          <s:enumeration value="Procesado" />
+          <s:enumeration value="Error" />
+          <s:enumeration value="Ninguno" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="Credencial" type="tns:Credencial" />
+      <s:complexType name="Credencial">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Usuario" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Clave" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoEDS" type="s:string" />
+        </s:sequence>
+        <s:anyAttribute />
+      </s:complexType>
+      <s:element name="SolicitarAutorizacionCredito">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="solicitud" type="tns:SolicitudVentaCredito" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SolicitudVentaCredito">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:SolicitudCredito">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Placa" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="Kilometraje" type="s:double" />
+              <s:element minOccurs="0" maxOccurs="1" name="CodigoMaterial" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="RequiereAprobacion" type="s:boolean" />
+              <s:element minOccurs="1" maxOccurs="1" name="FechaSolicitud" type="s:dateTime" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="SolicitudCredito" abstract="true">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoEDS" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TipoIdentificador" type="tns:TipoIdentificador" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroIdentificador" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Manifiesto" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoPosicion" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="TipoIdentificador">
+        <s:restriction base="s:string">
+          <s:enumeration value="Chip" />
+          <s:enumeration value="Tag" />
+          <s:enumeration value="CodigoBarras" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ResultadoAutorizacion">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Tipo" type="tns:TipoTransaccion" />
+          <s:element minOccurs="1" maxOccurs="1" name="IdAutorizacion" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoCliente" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NombreCliente" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Placa" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Cupo" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Saldo" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="Mensaje" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Visita" type="tns:DetalleVisita" />
+          <s:element minOccurs="1" maxOccurs="1" name="Consumo" type="tns:DetalleConsumo" />
+          <s:element minOccurs="0" maxOccurs="1" name="Detalles" type="tns:ArrayOfDetalleMaterialCredito" />
+          <s:element minOccurs="1" maxOccurs="1" name="Descuento" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="PrecioVentaCliente" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="PrecioVentaEDS" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="ResponsableCredito" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ImprimirGuiaDespacho" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="UsaManifiesto" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="TipoTransaccion">
+        <s:restriction base="s:string">
+          <s:enumeration value="Niguna" />
+          <s:enumeration value="Credito" />
+          <s:enumeration value="Anticipo" />
+          <s:enumeration value="Control" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="DetalleVisita">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Dia" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Semana" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Mes" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DetalleConsumo">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Dia" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Semana" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Mes" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfDetalleMaterialCredito">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="DetalleMaterialCredito" nillable="true" type="tns:DetalleMaterialCredito" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DetalleMaterialCredito">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoMaterial" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Precio" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SolicitarAutorizacionCreditoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SolicitarAutorizacionCreditoResult" type="tns:ResultadoAutorizacion" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LiberarCupo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="codigoEDS" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idAutorizacion" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LiberarCupoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="LiberarCupoResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrarInicioTurno">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="turno" type="tns:Turno" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Turno">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:InformacionEDS">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="CodigoTurno" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="IdentificacionVendedor" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TotalConsignado" type="s:double" />
+              <s:element minOccurs="0" maxOccurs="1" name="PosicionesTurno" type="tns:ArrayOfPosicionTurno" />
+              <s:element minOccurs="1" maxOccurs="1" name="FechaHora" type="s:dateTime" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfPosicionTurno">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PosicionTurno" nillable="true" type="tns:PosicionTurno" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="PosicionTurno">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoPosicion" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Lectura" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Precio" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegistrarInicioTurnoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegistrarInicioTurnoResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrarCierreTurno">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="turno" type="tns:Turno" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrarCierreTurnoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegistrarCierreTurnoResult" type="tns:ResultadoSolicitud" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="RegistrarVentaCombustibleSoapIn">
+    <wsdl:part name="parameters" element="tns:RegistrarVentaCombustible" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarVentaCombustibleSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrarVentaCombustibleResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarVentaCombustibleCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="SolicitarAutorizacionCreditoSoapIn">
+    <wsdl:part name="parameters" element="tns:SolicitarAutorizacionCredito" />
+  </wsdl:message>
+  <wsdl:message name="SolicitarAutorizacionCreditoSoapOut">
+    <wsdl:part name="parameters" element="tns:SolicitarAutorizacionCreditoResponse" />
+  </wsdl:message>
+  <wsdl:message name="SolicitarAutorizacionCreditoCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="LiberarCupoSoapIn">
+    <wsdl:part name="parameters" element="tns:LiberarCupo" />
+  </wsdl:message>
+  <wsdl:message name="LiberarCupoSoapOut">
+    <wsdl:part name="parameters" element="tns:LiberarCupoResponse" />
+  </wsdl:message>
+  <wsdl:message name="LiberarCupoCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarInicioTurnoSoapIn">
+    <wsdl:part name="parameters" element="tns:RegistrarInicioTurno" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarInicioTurnoSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrarInicioTurnoResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarInicioTurnoCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarCierreTurnoSoapIn">
+    <wsdl:part name="parameters" element="tns:RegistrarCierreTurno" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarCierreTurnoSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrarCierreTurnoResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegistrarCierreTurnoCredencial">
+    <wsdl:part name="Credencial" element="tns:Credencial" />
+  </wsdl:message>
+  <wsdl:portType name="ProcesosFleetStarSoap">
+    <wsdl:operation name="RegistrarVentaCombustible">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registra una venta combustible en Fleet Star.</wsdl:documentation>
+      <wsdl:input message="tns:RegistrarVentaCombustibleSoapIn" />
+      <wsdl:output message="tns:RegistrarVentaCombustibleSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SolicitarAutorizacionCredito">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Valida el uso de créditos con base en los datos suministrados.</wsdl:documentation>
+      <wsdl:input message="tns:SolicitarAutorizacionCreditoSoapIn" />
+      <wsdl:output message="tns:SolicitarAutorizacionCreditoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="LiberarCupo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Libera o Cancela un crédito reservado por una solictud de venta crédito previa.</wsdl:documentation>
+      <wsdl:input message="tns:LiberarCupoSoapIn" />
+      <wsdl:output message="tns:LiberarCupoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarInicioTurno">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Inicia un nuevo turno en Fleet Star.</wsdl:documentation>
+      <wsdl:input message="tns:RegistrarInicioTurnoSoapIn" />
+      <wsdl:output message="tns:RegistrarInicioTurnoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarCierreTurno">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registra el cierre de un turno Iniciado previamente en Fleet Star.</wsdl:documentation>
+      <wsdl:input message="tns:RegistrarCierreTurnoSoapIn" />
+      <wsdl:output message="tns:RegistrarCierreTurnoSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ProcesosFleetStarSoap" type="tns:ProcesosFleetStarSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="RegistrarVentaCombustible">
+      <soap:operation soapAction="http://tempuri.org/RegistrarVentaCombustible" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RegistrarVentaCombustibleCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitarAutorizacionCredito">
+      <soap:operation soapAction="http://tempuri.org/SolicitarAutorizacionCredito" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:SolicitarAutorizacionCreditoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LiberarCupo">
+      <soap:operation soapAction="http://tempuri.org/LiberarCupo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:LiberarCupoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarInicioTurno">
+      <soap:operation soapAction="http://tempuri.org/RegistrarInicioTurno" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RegistrarInicioTurnoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarCierreTurno">
+      <soap:operation soapAction="http://tempuri.org/RegistrarCierreTurno" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RegistrarCierreTurnoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ProcesosFleetStarSoap12" type="tns:ProcesosFleetStarSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="RegistrarVentaCombustible">
+      <soap12:operation soapAction="http://tempuri.org/RegistrarVentaCombustible" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RegistrarVentaCombustibleCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitarAutorizacionCredito">
+      <soap12:operation soapAction="http://tempuri.org/SolicitarAutorizacionCredito" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:SolicitarAutorizacionCreditoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LiberarCupo">
+      <soap12:operation soapAction="http://tempuri.org/LiberarCupo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:LiberarCupoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarInicioTurno">
+      <soap12:operation soapAction="http://tempuri.org/RegistrarInicioTurno" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RegistrarInicioTurnoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarCierreTurno">
+      <soap12:operation soapAction="http://tempuri.org/RegistrarCierreTurno" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RegistrarCierreTurnoCredencial" part="Credencial" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ProcesosFleetStar">
+    <wsdl:port name="ProcesosFleetStarSoap" binding="tns:ProcesosFleetStarSoap">
+      <soap:address location="http://181.129.145.210:9080/EnergiaEnRuta/TerceroServices/Tercero/ProcesosPetromil.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ProcesosFleetStarSoap12" binding="tns:ProcesosFleetStarSoap12">
+      <soap12:address location="http://181.129.145.210:9080/EnergiaEnRuta/TerceroServices/Tercero/ProcesosPetromil.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

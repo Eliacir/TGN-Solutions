@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns:tns="http://www.terpel.com/integraciones/comunes/schemas/headerRequest/v1.0" elementFormDefault="qualified" targetNamespace="http://www.terpel.com/integraciones/comunes/schemas/headerRequest/v1.0" xmlns="http://www.w3.org/2001/XMLSchema">
+  <element name="headerRequest" type="tns:HeaderRequest_Type" />
+  <complexType name="HeaderRequest_Type">
+    <sequence>
+      <element minOccurs="0" maxOccurs="1" name="authorization" type="string" />
+      <element minOccurs="0" maxOccurs="1" name="fecha" type="dateTime" />
+      <element minOccurs="0" maxOccurs="1" name="aplicacion" type="string" />
+      <element minOccurs="0" maxOccurs="1" name="dispositivo" type="string" />
+    </sequence>
+  </complexType>
+</schema>
