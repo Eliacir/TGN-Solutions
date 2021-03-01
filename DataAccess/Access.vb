@@ -11,6 +11,54 @@ Imports System
 
 Public Class DA
 
+#Region "METODOS TGN"
+
+    Public Function RecuperarVehiculosEnRuta() As DataSet
+        Dim DB As Database = DatabaseFactory.CreateDatabase()
+        Dim SqlCommand As String = "TMS_RecuperarVehiculosEnRuta"
+        Dim DatabaseCommand As DbCommand = DB.GetStoredProcCommand(SqlCommand)
+
+        Using connection As DbConnection = DB.CreateConnection()
+            connection.Open()
+            Try
+                Return DB.ExecuteDataSet(DatabaseCommand)
+            Catch
+                Throw
+            Finally
+                connection.Close()
+            End Try
+        End Using
+    End Function
+    Public Function RecuperarParametro(ByVal nombre As String) As String
+        'Crea el objeto base de datos, esto representa la conexion a la base de datos indicada en el archivo de configuracion
+        Dim DB As Database = DatabaseFactory.CreateDatabase()
+
+        Using connection As DbConnection = DB.CreateConnection()
+            connection.Open()
+
+            Try
+                Dim Resultado As String
+                'Crea un sqlComand a partir del nombre del procedimiento almacenado
+                Dim SqlCommand As String = "TMS_RecuperarParametro"
+                Dim DatabaseCommand As DbCommand = DB.GetStoredProcCommand(SqlCommand)
+
+                DB.AddInParameter(DatabaseCommand, "Nombre", DbType.String, nombre)
+
+                'Ejecuta el Procedimiento Almacenado
+                Resultado = DB.ExecuteScalar(DatabaseCommand).ToString()
+                connection.Close()
+                Return Resultado
+            Catch
+                Throw
+            Finally
+                If Not connection Is Nothing Then
+                    connection.Close()
+                End If
+            End Try
+        End Using
+    End Function
+#End Region
+
     Public Enum VehiculoTanques
         Insertar
         Actualizar
@@ -39,34 +87,7 @@ Public Class DA
         End Using
     End Function
 
-    Public Function RecuperarParametro(ByVal nombre As String) As String
-        'Crea el objeto base de datos, esto representa la conexion a la base de datos indicada en el archivo de configuracion
-        Dim DB As Database = DatabaseFactory.CreateDatabase()
 
-        Using connection As DbConnection = DB.CreateConnection()
-            connection.Open()
-
-            Try
-                Dim Resultado As String
-                'Crea un sqlComand a partir del nombre del procedimiento almacenado
-                Dim SqlCommand As String = "RecuperarParametro"
-                Dim DatabaseCommand As DbCommand = DB.GetStoredProcCommand(SqlCommand)
-
-                DB.AddInParameter(DatabaseCommand, "Nombre", DbType.String, nombre)
-
-                'Ejecuta el Procedimiento Almacenado
-                Resultado = DB.ExecuteScalar(DatabaseCommand).ToString()
-                connection.Close()
-                Return Resultado
-            Catch
-                Throw
-            Finally
-                If Not connection Is Nothing Then
-                    connection.Close()
-                End If
-            End Try
-        End Using
-    End Function
     Public Function CrearActualizarCredibancoTefCloud(ByVal idEstacion As Integer, ByVal Codigo As String, ByVal Usuario As String, ByVal Clave As String) As Boolean
 
         Dim SeInserto As Boolean = False

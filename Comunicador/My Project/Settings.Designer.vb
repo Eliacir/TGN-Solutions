@@ -15,7 +15,7 @@ Option Explicit On
 Namespace My
     
     <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
-     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0"),  _
+     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0"),  _
      Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
     Partial Friend NotInheritable Class MySettings
         Inherits Global.System.Configuration.ApplicationSettingsBase
@@ -94,21 +94,10 @@ Namespace My
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.WebServiceUrl),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://181.129.145.210:9080/EnergiaEnRuta/TerceroServices/Tercero/ProcesosPetromi"& _ 
-            "l.asmx")>  _
-        Public ReadOnly Property ServicioComunicadorPetromil_ServicesFleetStar_ProcesosFleetStar() As String
+         Global.System.Configuration.DefaultSettingValueAttribute("http://webcloud.satrack.com/WebServiceEventos/getEvents.asmx")>  _
+        Public ReadOnly Property ServicioComunicadorPetromil_ServiceSatrack_getEvents() As String
             Get
-                Return CType(Me("ServicioComunicadorPetromil_ServicesFleetStar_ProcesosFleetStar"),String)
-            End Get
-        End Property
-        
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.WebServiceUrl),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://13.65.95.237:7878/TexacoServices/controller/procesoscontroller.asmx")>  _
-        Public ReadOnly Property ServicioComunicadorPetromil_ProcesosFleetStar_ProcesosFleetStar() As String
-            Get
-                Return CType(Me("ServicioComunicadorPetromil_ProcesosFleetStar_ProcesosFleetStar"),String)
+                Return CType(Me("ServicioComunicadorPetromil_ServiceSatrack_getEvents"),String)
             End Get
         End Property
     End Class

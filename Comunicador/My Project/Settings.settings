@@ -14,11 +14,8 @@
     <Setting Name="ServicioComunicadorTexaco_ServicesFleetStar_ProcesosFleetStar" Type="(Web Service URL)" Scope="Application">
       <Value Profile="(Default)">http://fleetstar-qas.gasdata.com.co:9798/Tercero/Tercero/ProcesosFleetStar.asmx</Value>
     </Setting>
-    <Setting Name="ServicioComunicadorPetromil_ServicesFleetStar_ProcesosFleetStar" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://181.129.145.210:9080/EnergiaEnRuta/TerceroServices/Tercero/ProcesosPetromil.asmx</Value>
-    </Setting>
-    <Setting Name="ServicioComunicadorPetromil_ProcesosFleetStar_ProcesosFleetStar" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://13.65.95.237:7878/TexacoServices/controller/procesoscontroller.asmx</Value>
+    <Setting Name="ServicioComunicadorPetromil_ServiceSatrack_getEvents" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://webcloud.satrack.com/WebServiceEventos/getEvents.asmx</Value>
     </Setting>
   </Settings>
 </SettingsFile>

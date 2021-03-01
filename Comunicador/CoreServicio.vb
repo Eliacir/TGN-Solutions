@@ -18,7 +18,6 @@ Public Class CoreServicio
     Dim ThreadConsultaCDC As Thread
     Dim LogFallas As New EstacionException
     Friend WithEvents EventLog1 As System.Diagnostics.EventLog
-    Dim ReciboSincronizacion As String
     Private Recibo_ As Double
     Private Mensaje As String
     Private ValorVentasTexaco As String
@@ -87,26 +86,46 @@ Public Class CoreServicio
 
 #Region "Envio Informacion"
 
-    Private Sub EnviarDatosCDC()
+    Private Sub ConsultarVehiculosEnRuta()
         Try
 
             Try
-                'Dim Datos = oHelper.RecuperarVentasCreditoTerceroNoEnviadas()
-                'For y = 0 To Datos.Tables.Count() - 1
-                '    For Each oDatos As DataRow In Datos.Tables(y).Rows
-                '        If CInt(oDatos("IdTercero")) = 1 Then
-                '            Me.RegistrarVentasTexaco(CLng(oDatos("IdRegistroVenta")))
-                '        ElseIf CInt(oDatos("IdTercero")) = 2 Then
-                '            Me.RegistrarVentasPetromil(CLng(oDatos("IdRegistroVenta")))
-                '        End If
 
-                '    Next
-                'Next
+                Dim dsVehiculos As New DataSet
+                Dim servicessatrack As New ServiceSatrack.getEvents
 
+                Dim UsuarioSatrac As String
+                Dim ClaveSatrack As String
+                Dim placaVehiculoEnRuta As String
+                Dim longitud As String
+                Dim latitud As String
+
+                'Recuperamos usuario y clave de la BD
+                UsuarioSatrac = oHelper.RecuperarParametro("UsuarioSatrck")
+                ClaveSatrack = oHelper.RecuperarParametro("PasswordSatrck")
+
+                'Recuperamos los vehiculos en ruta de jeronimo
+                dsVehiculos = oHelper.RecuperarVehiculosEnRuta
+                For Each oDatos As DataRow In dsVehiculos.Tables(0).Rows
+
+                    placaVehiculoEnRuta = oDatos("Placa").ToString()
+
+                    'Consultamos el vehiculo en satrack
+                    Dim DataSet = servicessatrack.getLastEvent(UsuarioSatrac, ClaveSatrack, placaVehiculoEnRuta)
+                    Dim cont = 0
+
+                    For i = 0 To DataSet.Tables.Count() - 1
+                        For Each Datos As DataRow In DataSet.Tables(i).Rows
+                            latitud = oDatos("Latitud").ToString()
+                            longitud = oDatos("Longitud").ToString()
+                        Next
+                    Next
+
+                Next
 
 
             Catch ex As Exception
-                AlmacenarEnArchivo("Error en RegistrarVentaterceros, evento EnviarDatosCDC: " & ex.Message)
+                AlmacenarEnArchivo("Error en RecuperarVehiculosEnRuta, evento ConsultarVehiculosEnRuta: " & ex.Message)
             End Try
 
 
@@ -374,7 +393,7 @@ Public Class CoreServicio
     Private Sub TimerEnvio_Elapsed(sender As Object, e As Timers.ElapsedEventArgs) Handles TimerEnvio.Elapsed
         Try
             TimerEnvio.Enabled = False
-            EnviarDatosCDC()
+            ConsultarVehiculosEnRuta()
         Catch ex As Exception
             AlmacenarEnArchivo("Error en TimerEnvio_Elapsed: " & ex.Message)
         Finally
