@@ -13,6 +13,23 @@ Public Class DA
 
 #Region "METODOS TGN"
 
+    Public Function TMS_ExisteVehiculoARA(ByVal Placa As String) As Boolean
+        Dim DB As Database = DatabaseFactory.CreateDatabase()
+        Dim SqlCommand As String = "TMS_ExisteVehiculoARA"
+        Dim DatabaseCommand As DbCommand = DB.GetStoredProcCommand(SqlCommand)
+        DB.AddInParameter(DatabaseCommand, "Placa", DbType.String, Placa)
+        Using connection As DbConnection = DB.CreateConnection()
+            connection.Open()
+            Try
+                Return CBool(DB.ExecuteScalar(DatabaseCommand))
+            Catch
+                Throw
+            Finally
+                connection.Close()
+            End Try
+        End Using
+    End Function
+
     Public Function RecuperarVehiculosEnRuta() As DataSet
         Dim DB As Database = DatabaseFactory.CreateDatabase()
         Dim SqlCommand As String = "TMS_RecuperarVehiculosEnRuta"

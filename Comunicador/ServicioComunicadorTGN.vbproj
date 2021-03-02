@@ -6,9 +6,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{72BCA0D9-441B-41CC-8AEA-FCD4A0B282FD}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>ServicioComunicadorPetromil.ServicioComunicadorPetromil</StartupObject>
-    <RootNamespace>ServicioComunicadorPetromil</RootNamespace>
-    <AssemblyName>ServicioComunicadorPetromil</AssemblyName>
+    <StartupObject>ServicioComunicadorTGN.ServicioComunicadorPetromil</StartupObject>
+    <RootNamespace>ServicioComunicadorTGN</RootNamespace>
+    <AssemblyName>ServicioComunicadorTGN</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Console</MyType>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -35,7 +35,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>ServicioComunicadorPetromil.xml</DocumentationFile>
+    <DocumentationFile>ServicioComunicadorTGN.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -102,6 +102,7 @@
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="ProjectInstaller.Designer.vb">
       <DependentUpon>ProjectInstaller.vb</DependentUpon>

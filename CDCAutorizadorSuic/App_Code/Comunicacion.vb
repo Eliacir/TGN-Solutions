@@ -15,50 +15,90 @@ Public Class Comunicacion
     Inherits System.Web.Services.WebService
 
 
-    <WebMethod()> _
-    Public Function AutorizarVentaGNV(ByVal ROM As String, ByVal Placa As String, ByVal EsCombustible As Boolean) As Respuesta
-        Dim respuesta As New Respuesta
-        Dim oHelper As New DataAccess
+    <WebMethod()>
+    Public Function getDistanceBetweenDates(ByVal Placa As String, ByVal FechaInicial As DateTime, ByVal FechaFinal As DateTime) As String
+        Dim respuesta As String = ""
+        Dim oHelper As New Gasolutions.DataAccess.DA
+        Dim Comunicacion As New Satrack.getEvents
+        Dim Kilometros As Long
         Try
-            'oHelper.RecuperarEstadoVehiculo(ROM, Placa, EsCombustible)
-            respuesta.Procesado = True
-            respuesta.ErrorMessage = Nothing
+            If FechaFinal < FechaInicial Then
+                Throw New System.Exception("La fecha Final debe ser mayor a la Fecha Inicial.")
+            End If
+            Dim TotalHour = (FechaFinal - FechaInicial).TotalHours()
+            If TotalHour > 48 Then
+                Throw New System.Exception("El rango entre las fechas no debe ser mayor a 48 horas.")
+            End If
+
+            Dim credenciales As ICredentials = New NetworkCredential("operacionesbaq", "Barranquilla2020+")
+            Dim DataSet = Comunicacion.GetKilometer("operacionesbaq", "Barranquilla2020+", Placa, DatePart("yyyy", FechaInicial), DatePart("m", FechaInicial), DatePart("d", FechaInicial), 0, 0, 0, DatePart("yyyy", FechaFinal), DatePart("m", FechaFinal), DatePart("d", FechaFinal), 0, 0, 0)
+            Dim cont = 0
+            For i = 0 To DataSet.Tables.Count() - 1
+                For Each oDatos As DataRow In DataSet.Tables(i).Rows
+                    Kilometros = CLng(oDatos("Kilometros").ToString())
+                Next
+            Next
+            Kilometros = Kilometros * 1000
+            respuesta = Kilometros.ToString()
+
+
         Catch ex As SoapException
-            respuesta.ErrorMessage = ex.Message
-            respuesta.NroConfirmacion = ""
+            respuesta = ex.Message
         Catch ex As System.Exception
-            respuesta.ErrorMessage = ex.Message
-            respuesta.NroConfirmacion = ""
+            respuesta = ex.Message
         End Try
         Return respuesta
     End Function
 
-    <WebMethod()> _
-    Public Function RecuperarFechaProximoMantenimientoPorROM(ByVal ROM As String) As Respuesta
-        Dim respuesta As New Respuesta
-        Dim oHelper As New DataAccess
+    <WebMethod()>
+    Public Function GetAllVehicles() As List(Of Vehiculo)
+        Dim respuesta As New List(Of Vehiculo)
+        Dim oHelper As New Gasolutions.DataAccess.DA
+        Dim Comunicacion As New Satrack.getEvents
         Try
-            ' respuesta.NroConfirmacion = oHelper.RecuperarFechaProximoMantenimientoPorROM(ROM)
-            respuesta.Procesado = True
-            respuesta.ErrorMessage = Nothing
+
+            Dim credenciales As ICredentials = New NetworkCredential("operacionesbaq", "Barranquilla2020+")
+            Dim DataSet = Comunicacion.retrieveEventsByIDV3("operacionesbaq", "Barranquilla2020+", "*", "21", 4557455484, 300)
+            Dim cont = 0
+            For i = 0 To DataSet.Tables.Count() - 1
+                For Each oDatos As DataRow In DataSet.Tables(i).Rows
+                    If oHelper.TMS_ExisteVehiculoARA(oDatos("Placa").ToString()) Then
+                        Dim oVehiculo As New Vehiculo
+                        oVehiculo.Placa = oDatos("Placa")
+                        oVehiculo.Latitud = oDatos("Latitud")
+                        oVehiculo.Longitud = oDatos("Longitud")
+                        oVehiculo.Velocidad = oDatos("Velocidad")
+                        oVehiculo.Ubicacion = oDatos("Ubicacion")
+                        oVehiculo.FechaHora_GPS = oDatos("FechaHora_GPS")
+                        oVehiculo.Estado_Ignicion = True
+                        If oDatos("Estado_Ignicion").ToString() = "Apagado" Then
+                            oVehiculo.Estado_Ignicion = False
+                        End If
+                        respuesta.Add(oVehiculo)
+                    End If
+                Next
+            Next
+            Return respuesta
         Catch ex As SoapException
-            respuesta.ErrorMessage = ex.Message
-            respuesta.NroConfirmacion = ""
+            Throw ex
         Catch ex As System.Exception
-            respuesta.ErrorMessage = ex.Message
-            respuesta.NroConfirmacion = ""
+            Throw ex
         End Try
-        Return respuesta
     End Function
 
 
 End Class
 
-Public Class Respuesta
-    Public Property ErrorMessage As String
-    Public Property NroConfirmacion As String
-    Public Property Procesado As Boolean
-    Public Property Recaudos As New List(Of RespuestaRecaudoCAS)
+Public Class Vehiculo
+    Public Property Placa As String
+    Public Property LocationDate As String
+    Public Property Latitud As String
+    Public Property Longitud As String
+    Public Property Velocidad As String
+    Public Property Ubicacion As String
+    Public Property FechaHora_GPS As String
+    Public Property Estado_Ignicion As Boolean
+
 End Class
 
 Public Class RespuestaRecaudoCAS

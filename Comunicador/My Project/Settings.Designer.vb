@@ -111,9 +111,9 @@ Namespace My
     Friend Module MySettingsProperty
         
         <Global.System.ComponentModel.Design.HelpKeywordAttribute("My.Settings")>  _
-        Friend ReadOnly Property Settings() As Global.ServicioComunicadorPetromil.My.MySettings
+        Friend ReadOnly Property Settings() As Global.ServicioComunicadorTGN.My.MySettings
             Get
-                Return Global.ServicioComunicadorPetromil.My.MySettings.Default
+                Return Global.ServicioComunicadorTGN.My.MySettings.Default
             End Get
         End Property
     End Module

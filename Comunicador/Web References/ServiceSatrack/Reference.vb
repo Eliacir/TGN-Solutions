@@ -109,7 +109,13 @@ Namespace ServiceSatrack
         '''<remarks/>
         Public Sub New()
             MyBase.New
-
+            Me.Url = Global.ServicioComunicadorTGN.My.MySettings.Default.ServicioComunicadorPetromil_ServiceSatrack_getEvents
+            If (Me.IsLocalFileSystemWebService(Me.Url) = true) Then
+                Me.UseDefaultCredentials = true
+                Me.useDefaultCredentialsSetExplicitly = false
+            Else
+                Me.useDefaultCredentialsSetExplicitly = true
+            End If
         End Sub
         
         Public Shadows Property Url() As String
