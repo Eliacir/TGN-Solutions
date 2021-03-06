@@ -16,7 +16,7 @@ Public Class Comunicacion
 
 
     <WebMethod()>
-    Public Function getDistanceBetweenDates(ByVal Placa As String, ByVal FechaInicial As DateTime, ByVal FechaFinal As DateTime) As String
+    Public Function GetDistanceBetweenDates(ByVal Placa As String, ByVal FechaInicial As DateTime, ByVal FechaFinal As DateTime) As String
         Dim respuesta As String = ""
         Dim oHelper As New Gasolutions.DataAccess.DA
         Dim Comunicacion As New Satrack.getEvents
@@ -30,8 +30,10 @@ Public Class Comunicacion
                 Throw New System.Exception("El rango entre las fechas no debe ser mayor a 48 horas.")
             End If
 
-            Dim credenciales As ICredentials = New NetworkCredential("operacionesbaq", "Barranquilla2020+")
-            Dim DataSet = Comunicacion.GetKilometer("operacionesbaq", "Barranquilla2020+", Placa, DatePart("yyyy", FechaInicial), DatePart("m", FechaInicial), DatePart("d", FechaInicial), 0, 0, 0, DatePart("yyyy", FechaFinal), DatePart("m", FechaFinal), DatePart("d", FechaFinal), 0, 0, 0)
+            Dim usuario = oHelper.RecuperarParametro("UsuarioSatrack")
+            Dim clave = oHelper.RecuperarParametro("PasswordSatrack")
+            Dim credenciales As ICredentials = New NetworkCredential(usuario, clave)
+            Dim DataSet = Comunicacion.GetKilometer(usuario, clave, Placa, DatePart("yyyy", FechaInicial), DatePart("m", FechaInicial), DatePart("d", FechaInicial), DatePart("h", FechaInicial), DatePart("n", FechaInicial), DatePart("s", FechaInicial), DatePart("yyyy", FechaFinal), DatePart("m", FechaFinal), DatePart("d", FechaFinal), DatePart("h", FechaFinal), DatePart("n", FechaFinal), DatePart("s", FechaFinal))
             Dim cont = 0
             For i = 0 To DataSet.Tables.Count() - 1
                 For Each oDatos As DataRow In DataSet.Tables(i).Rows
@@ -57,9 +59,21 @@ Public Class Comunicacion
         Dim Comunicacion As New Satrack.getEvents
         Try
 
-            Dim credenciales As ICredentials = New NetworkCredential("operacionesbaq", "Barranquilla2020+")
-            Dim DataSet = Comunicacion.retrieveEventsByIDV3("operacionesbaq", "Barranquilla2020+", "*", "21", 4557455484, 300)
+
+            Dim usuario = oHelper.RecuperarParametro("UsuarioSatrack")
+            Dim claveopcional = oHelper.RecuperarParametro("ClaveOpcionalSatrack")
+            Dim clave = oHelper.RecuperarParametro("PasswordSatrack")
+            Dim NroRegistros = CInt(oHelper.RecuperarParametro("NroRegistros"))
+
+            'Dim usuario = "operacionesbaq"
+            'Dim clave = "Barranquilla2020+"
+
+            Dim credenciales As ICredentials = New NetworkCredential(usuario, clave)
+            Dim DataSet = Comunicacion.retrieveEventsByIDV3(usuario, clave, "*", "21", CLng(claveopcional), NroRegistros)
             Dim cont = 0
+            If DataSet Is Nothing Then
+                Throw New System.Exception("No se encontraron datos.")
+            End If
             For i = 0 To DataSet.Tables.Count() - 1
                 For Each oDatos As DataRow In DataSet.Tables(i).Rows
                     If oHelper.TMS_ExisteVehiculoARA(oDatos("Placa").ToString()) Then

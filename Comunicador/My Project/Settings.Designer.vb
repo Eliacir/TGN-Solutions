@@ -56,7 +56,7 @@ Namespace My
         
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
         Public ReadOnly Property Archivo() As Boolean
             Get
                 Return CType(Me("Archivo"),Boolean)
@@ -74,7 +74,7 @@ Namespace My
         
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
         Public ReadOnly Property RastrearTareas() As Boolean
             Get
                 Return CType(Me("RastrearTareas"),Boolean)
@@ -84,20 +84,10 @@ Namespace My
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.WebServiceUrl),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://fleetstar-qas.gasdata.com.co:9798/Tercero/Tercero/ProcesosFleetStar.asmx")>  _
-        Public ReadOnly Property ServicioComunicadorTexaco_ServicesFleetStar_ProcesosFleetStar() As String
-            Get
-                Return CType(Me("ServicioComunicadorTexaco_ServicesFleetStar_ProcesosFleetStar"),String)
-            End Get
-        End Property
-        
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.WebServiceUrl),  _
          Global.System.Configuration.DefaultSettingValueAttribute("http://webcloud.satrack.com/WebServiceEventos/getEvents.asmx")>  _
-        Public ReadOnly Property ServicioComunicadorPetromil_ServiceSatrack_getEvents() As String
+        Public ReadOnly Property ServicioComunicadorTGN_ServiceSatrack_getEvents() As String
             Get
-                Return CType(Me("ServicioComunicadorPetromil_ServiceSatrack_getEvents"),String)
+                Return CType(Me("ServicioComunicadorTGN_ServiceSatrack_getEvents"),String)
             End Get
         End Property
     End Class

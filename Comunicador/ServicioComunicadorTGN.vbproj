@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{72BCA0D9-441B-41CC-8AEA-FCD4A0B282FD}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>ServicioComunicadorTGN.ServicioComunicadorPetromil</StartupObject>
+    <StartupObject>ServicioComunicadorTGN.ServicioComunicadorTGN</StartupObject>
     <RootNamespace>ServicioComunicadorTGN</RootNamespace>
     <AssemblyName>ServicioComunicadorTGN</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -39,7 +39,7 @@
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
-    <OptionExplicit>On</OptionExplicit>
+    <OptionExplicit>Off</OptionExplicit>
   </PropertyGroup>
   <PropertyGroup>
     <OptionCompare>Binary</OptionCompare>
@@ -110,11 +110,11 @@
     <Compile Include="ProjectInstaller.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ServicioComunicadorPetromil.vb">
+    <Compile Include="ServicioComunicadorTGN.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ServicioComunicadorPetromil.Designer.vb">
-      <DependentUpon>ServicioComunicadorPetromil.vb</DependentUpon>
+    <Compile Include="ServicioComunicadorTGN.Designer.vb">
+      <DependentUpon>ServicioComunicadorTGN.vb</DependentUpon>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
@@ -187,7 +187,7 @@
       <CachedDynamicPropName>
       </CachedDynamicPropName>
       <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
-      <CachedSettingsPropName>ServicioComunicadorPetromil_ServiceSatrack_getEvents</CachedSettingsPropName>
+      <CachedSettingsPropName>ServicioComunicadorTGN_ServiceSatrack_getEvents</CachedSettingsPropName>
     </WebReferenceUrl>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

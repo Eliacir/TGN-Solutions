@@ -3,18 +3,15 @@
   <Profiles />
   <Settings>
     <Setting Name="Archivo" Type="System.Boolean" Scope="Application">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Timer" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">5000</Value>
     </Setting>
     <Setting Name="RastrearTareas" Type="System.Boolean" Scope="Application">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="ServicioComunicadorTexaco_ServicesFleetStar_ProcesosFleetStar" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://fleetstar-qas.gasdata.com.co:9798/Tercero/Tercero/ProcesosFleetStar.asmx</Value>
-    </Setting>
-    <Setting Name="ServicioComunicadorPetromil_ServiceSatrack_getEvents" Type="(Web Service URL)" Scope="Application">
+    <Setting Name="ServicioComunicadorTGN_ServiceSatrack_getEvents" Type="(Web Service URL)" Scope="Application">
       <Value Profile="(Default)">http://webcloud.satrack.com/WebServiceEventos/getEvents.asmx</Value>
     </Setting>
   </Settings>

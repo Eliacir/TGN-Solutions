@@ -13,7 +13,5 @@ Public Class ProjectInstaller
 
     End Sub
 
-    Private Sub ServiceInstaller1_AfterInstall(sender As Object, e As InstallEventArgs) Handles ServicioComunicadorCreditosTercero.AfterInstall
 
-    End Sub
 End Class

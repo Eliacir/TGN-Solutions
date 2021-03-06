@@ -1,5 +1,4 @@
 ﻿Imports System.Threading
-Imports CoreService
 Imports ServicioComunicadorTGN
 
 
@@ -9,7 +8,7 @@ Module TestService
     Sub Main(ByVal args() As String)
 
 
-        '' Dim oCore As New CoreService.CoreService 'Autorizador
+        Dim oCore As New ServicioComunicadorTGN.CoreServicio 'Autorizador
 
 
         While True

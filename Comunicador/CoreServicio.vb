@@ -42,6 +42,9 @@ Public Class CoreServicio
 
     Public Sub Incializar()
         Try
+
+            ConsultarVehiculosEnRuta()
+
             TimerEnvio = New Timers.Timer
             AddHandler TimerEnvio.Elapsed, AddressOf TimerEnvio_Elapsed
             TimerEnvio.Interval = My.Settings.Timer
@@ -101,8 +104,8 @@ Public Class CoreServicio
                 Dim latitud As String
 
                 'Recuperamos usuario y clave de la BD
-                UsuarioSatrac = oHelper.RecuperarParametro("UsuarioSatrck")
-                ClaveSatrack = oHelper.RecuperarParametro("PasswordSatrck")
+                UsuarioSatrac = oHelper.RecuperarParametro("UsuarioSatrack")
+                ClaveSatrack = oHelper.RecuperarParametro("PasswordSatrack")
 
                 'Recuperamos los vehiculos en ruta de jeronimo
                 dsVehiculos = oHelper.RecuperarVehiculosEnRuta
@@ -111,13 +114,13 @@ Public Class CoreServicio
                     placaVehiculoEnRuta = oDatos("Placa").ToString()
 
                     'Consultamos el vehiculo en satrack
+                    servicessatrack.Url = oHelper.RecuperarParametro("UrlSatrack")
                     Dim DataSet = servicessatrack.getLastEvent(UsuarioSatrac, ClaveSatrack, placaVehiculoEnRuta)
-                    Dim cont = 0
 
                     For i = 0 To DataSet.Tables.Count() - 1
                         For Each Datos As DataRow In DataSet.Tables(i).Rows
-                            latitud = oDatos("Latitud").ToString()
-                            longitud = oDatos("Longitud").ToString()
+                            latitud = Datos("Latitud").ToString()
+                            longitud = Datos("Longitud").ToString()
                         Next
                     Next
 
@@ -127,7 +130,6 @@ Public Class CoreServicio
             Catch ex As Exception
                 AlmacenarEnArchivo("Error en RecuperarVehiculosEnRuta, evento ConsultarVehiculosEnRuta: " & ex.Message)
             End Try
-
 
         Catch ex As Exception
             AlmacenarEnArchivo("Error en EnviarDatosCDC: " & ex.Message)

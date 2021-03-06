@@ -22,26 +22,26 @@
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.ServiceProcessInstaller1 = New System.ServiceProcess.ServiceProcessInstaller()
-        Me.ServicioComunicadorCreditosTercero = New System.ServiceProcess.ServiceInstaller()
+        Me.ServicioComunicadorTGN = New System.ServiceProcess.ServiceInstaller()
         '
         'ServiceProcessInstaller1
         '
         Me.ServiceProcessInstaller1.Password = Nothing
         Me.ServiceProcessInstaller1.Username = Nothing
         '
-        'ServicioComunicadorCreditosTercero
+        'ServicioComunicadorTGN
         '
-        Me.ServicioComunicadorCreditosTercero.Description = "Servicio Comunicador Creditos Tercero"
-        Me.ServicioComunicadorCreditosTercero.DisplayName = "ServicioComunicadorCreditosTercero"
-        Me.ServicioComunicadorCreditosTercero.ServiceName = "ServicioComunicadorCreditosTercero"
-        Me.ServicioComunicadorCreditosTercero.StartType = System.ServiceProcess.ServiceStartMode.Automatic
+        Me.ServicioComunicadorTGN.Description = "ServicioComunicadorTGN"
+        Me.ServicioComunicadorTGN.DisplayName = "ServicioComunicadorTGN"
+        Me.ServicioComunicadorTGN.ServiceName = "ServicioComunicadorTGN"
+        Me.ServicioComunicadorTGN.StartType = System.ServiceProcess.ServiceStartMode.Automatic
         '
         'ProjectInstaller
         '
-        Me.Installers.AddRange(New System.Configuration.Install.Installer() {Me.ServiceProcessInstaller1, Me.ServicioComunicadorCreditosTercero})
+        Me.Installers.AddRange(New System.Configuration.Install.Installer() {Me.ServiceProcessInstaller1, Me.ServicioComunicadorTGN})
 
     End Sub
     Friend WithEvents ServiceProcessInstaller1 As System.ServiceProcess.ServiceProcessInstaller
-    Friend WithEvents ServicioComunicadorCreditosTercero As System.ServiceProcess.ServiceInstaller
+    Friend WithEvents ServicioComunicadorTGN As System.ServiceProcess.ServiceInstaller
 
 End Class
