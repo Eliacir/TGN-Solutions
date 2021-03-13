@@ -7,9 +7,14 @@ Imports System.Reflection
 Imports System.Threading
 Imports System
 Imports POSstation.Fabrica
-Imports gasolutions.Factory
+Imports Facturacion
 Imports Newtonsoft.Json
 Imports gasolutions
+Imports System.Net.Http
+Imports Newtonsoft.Json.Linq
+Imports GraphQL.Client.Http
+Imports GraphQL
+Imports GraphQL.Client.Serializer.Newtonsoft
 
 Public Class CoreServicio
 
@@ -43,7 +48,16 @@ Public Class CoreServicio
     Public Sub Incializar()
         Try
 
-            ConsultarVehiculosEnRuta()
+            'prueba token
+            Dim token As String = GetToken()
+
+            Dim lista As New List(Of String)
+            lista.Add("ehm000")
+            ' prueba GetlastEventLocation
+            Dim respuesta = GetLastEventLocation(lista, token)
+
+            'Prueba  comunicador
+            'EnviarDatosTMS()
 
             TimerEnvio = New Timers.Timer
             AddHandler TimerEnvio.Elapsed, AddressOf TimerEnvio_Elapsed
@@ -52,6 +66,43 @@ Public Class CoreServicio
             IniciarConfiguracion()
         Catch ex As System.Exception
             AlmacenarEnArchivo(ex.Message & "OnStar InicioSauce")
+        End Try
+    End Sub
+
+    Private Sub IniciarTimer()
+        Try
+
+            If Not TimerEnvio Is Nothing Then
+                TimerEnvio.Dispose()
+                TimerEnvio = Nothing
+            End If
+
+
+            TimerEnvio = New Timers.Timer
+            AddHandler TimerEnvio.Elapsed, AddressOf TimerEnvio_Elapsed
+            TimerEnvio.Interval = My.Settings.Timer
+            TimerEnvio.Enabled = True
+        Catch ex As Exception
+            Try
+                AlmacenarEnArchivo("Error en IniciarTimer: " & ex.Message)
+            Catch
+
+            End Try
+        End Try
+    End Sub
+
+    Private Sub TimerEnvio_Elapsed(sender As Object, e As Timers.ElapsedEventArgs) Handles TimerEnvio.Elapsed
+        Try
+            TimerEnvio.Enabled = False
+
+            ConsultarVehiculosEnRuta()
+
+            EnviarDatosTMS()
+
+        Catch ex As Exception
+            AlmacenarEnArchivo("Error en TimerEnvio_Elapsed: " & ex.Message)
+        Finally
+            IniciarTimer()
         End Try
     End Sub
 
@@ -95,17 +146,8 @@ Public Class CoreServicio
             Try
 
                 Dim dsVehiculos As New DataSet
-                Dim servicessatrack As New ServiceSatrack.getEvents
 
-                Dim UsuarioSatrac As String
-                Dim ClaveSatrack As String
                 Dim placaVehiculoEnRuta As String
-                Dim longitud As String
-                Dim latitud As String
-
-                'Recuperamos usuario y clave de la BD
-                UsuarioSatrac = oHelper.RecuperarParametro("UsuarioSatrack")
-                ClaveSatrack = oHelper.RecuperarParametro("PasswordSatrack")
 
                 'Recuperamos los vehiculos en ruta de jeronimo
                 dsVehiculos = oHelper.RecuperarVehiculosEnRuta
@@ -113,220 +155,270 @@ Public Class CoreServicio
 
                     placaVehiculoEnRuta = oDatos("Placa").ToString()
 
-                    'Consultamos el vehiculo en satrack
-                    servicessatrack.Url = oHelper.RecuperarParametro("UrlSatrack")
-                    Dim DataSet = servicessatrack.getLastEvent(UsuarioSatrac, ClaveSatrack, placaVehiculoEnRuta)
-
-                    For i = 0 To DataSet.Tables.Count() - 1
-                        For Each Datos As DataRow In DataSet.Tables(i).Rows
-                            latitud = Datos("Latitud").ToString()
-                            longitud = Datos("Longitud").ToString()
-                        Next
-                    Next
-
+                    'Insertar RegistroEventoVehiculo
+                    oHelper.InsertarRegistroEventosVehiculo(placaVehiculoEnRuta, 1)
                 Next
-
 
             Catch ex As Exception
                 AlmacenarEnArchivo("Error en RecuperarVehiculosEnRuta, evento ConsultarVehiculosEnRuta: " & ex.Message)
             End Try
 
         Catch ex As Exception
-            AlmacenarEnArchivo("Error en EnviarDatosCDC: " & ex.Message)
+            AlmacenarEnArchivo("Error en ConsultarVehiculosEnRuta: " & ex.Message)
+        End Try
+    End Sub
+
+    Private Sub EnviarDatosTMS()
+        Try
+            Dim servicessatrack As New ServiceSatrack.getEvents
+
+            Dim UsuarioSatrac As String
+            Dim ClaveSatrack As String
+            Dim ClaveOpcionalSatrack As Long
+            Dim NroRegistros As Integer
+
+            Dim placa As String
+            Dim latitud As String = String.Empty
+            Dim longitud As String = String.Empty
+            Dim Temperatura1 As String = String.Empty
+            Dim Temperatura2 As String = String.Empty
+
+            'Recuperamos usuario y clave de la BD
+            UsuarioSatrac = oHelper.RecuperarParametro("UsuarioSatrack")
+            ClaveSatrack = oHelper.RecuperarParametro("PasswordSatrack")
+            ClaveOpcionalSatrack = CLng(oHelper.RecuperarParametro("ClaveOpcionalSatrack"))
+            NroRegistros = CInt(oHelper.RecuperarParametro("NroRegistros"))
+
+            servicessatrack.Url = oHelper.RecuperarParametro("UrlSatrack")
+
+            Dim DataSetSatrack As DataSet = servicessatrack.retrieveEventsByIDV3(UsuarioSatrac, ClaveSatrack, "*", 21, ClaveOpcionalSatrack, 1)
+
+
+            If Not DataSetSatrack Is Nothing Then
+                For i = 0 To DataSetSatrack.Tables.Count() - 1
+                    For Each Datos As DataRow In DataSetSatrack.Tables(i).Rows
+
+                        Dim PLacaStrack = Datos("Placa").ToString()
+                        Dim DatosEvento = oHelper.RecuperarDatosEnvioEvento(PLacaStrack)
+
+                        If Not DatosEvento Is Nothing Then
+                            For Each oDatos As DataRow In DatosEvento.Tables(0).Rows
+
+                                If CInt(oDatos("IdEventoAra")) = 1 Then 'LLEGADA A STORE
+
+                                    latitud = Datos("Latitud").ToString()
+                                    longitud = Datos("Longitud").ToString()
+                                    Temperatura1 = Datos("Temperatura1").ToString()
+                                    Temperatura2 = Datos("Temperatura2").ToString()
+
+                                    Dim respuesta As String = oHelper.EsLlegadaAPuntoDeInteres(latitud, longitud)
+
+                                    If Not String.IsNullOrEmpty(respuesta) Then
+                                        'Consumir servicio de envio a jeronimo
+
+                                        '
+
+                                        'Actualizamos la tabla TMSRegistroEventosVehiculo
+                                        oHelper.TMS_ActualizarRegistroEvento(PLacaStrack, 1)
+                                    End If
+
+                                ElseIf (CInt(oDatos("IdEventoAra")) = 9) Or (CInt(oDatos("IdEventoAra")) = 10) Then 'APERTURA DE PUERTA
+                                    Dim AperturaPuerta As DataSet = servicessatrack.retrieveEventsByIDV3(UsuarioSatrac, ClaveSatrack, "*", 3, ClaveOpcionalSatrack, 1)
+
+                                    'Consumir servicio de envio a jeronimo
+
+                                    '
+
+                                    'Actualizamos la tabla TMSRegistroEventosVehiculo
+                                    oHelper.TMS_ActualizarRegistroEvento(PLacaStrack, CInt(oDatos("IdEventoAra")))
+
+                                ElseIf (CInt(oDatos("IdEventoAra")) = 2) Then 'SALIDA STORE
+                                    Dim AperturaPuerta As DataSet = servicessatrack.retrieveEventsByIDV3(UsuarioSatrac, ClaveSatrack, "*", 21, ClaveOpcionalSatrack, 1)
+
+                                    'Consumir servicio de envio a jeronimo
+
+                                    '    
+
+
+                                    latitud = Datos("Latitud").ToString()
+                                    longitud = Datos("Longitud").ToString()
+                                    Temperatura1 = Datos("Temperatura1").ToString()
+                                    Temperatura2 = Datos("Temperatura2").ToString()
+
+                                    Dim respuesta As String = oHelper.EsLlegadaAPuntoDeInteres(latitud, longitud)
+
+                                    If String.IsNullOrEmpty(respuesta) Then
+                                        'Consumir servicio de envio a jeronimo
+
+                                        'Actualizamos la tabla TMSRegistroEventosVehiculo
+                                        oHelper.TMS_ActualizarRegistroEvento(PLacaStrack, 2)
+                                    End If
+
+                                End If
+
+                            Next
+                        End If
+                    Next
+                Next
+            Else
+                AlmacenarEnArchivo("Error en EnviarDatosTMS: Servicio satrack devuelve dataset vacio en evento retrieveEventsByIDV3 para la placa" & placa)
+            End If
+
+        Catch ex As Exception
+            AlmacenarEnArchivo("Error en EnviarDatosTMS: " & ex.Message)
         End Try
     End Sub
 
 #End Region
 
+#Region "Metodos Api"
+    Public Shared Function GetToken() As String
+        Try
+
+            Using client = New HttpClient()
+
+                client.BaseAddress = New Uri("http://securityprovider.satrack.com:8080/auth/realms/satrack-base/protocol/openid-connect/token")
+
+                Dim nvc = New List(Of KeyValuePair(Of String, String))()
+
+                nvc.Add(New KeyValuePair(Of String, String)("client_id", "external-client-transportesgandur01"))
+                nvc.Add(New KeyValuePair(Of String, String)("client_secret", "e1b5c49a-845c-4b8b-b6e3-99763be6a648"))
+                nvc.Add(New KeyValuePair(Of String, String)("grant_type", "client_credentials"))
+
+                Dim request As HttpRequestMessage = New HttpRequestMessage(HttpMethod.Post, "")
+                request.Content = New FormUrlEncodedContent(nvc)
+                Dim response = client.SendAsync(request)
+
+                If response.Result.IsSuccessStatusCode Then
+                    Dim respuesta = response.Result.Content.ReadAsStringAsync()
+                    Dim token = JsonConvert.DeserializeObject(Of TokenResult)(respuesta.Result)
+                    Return token.access_token
+                End If
+            End Using
+
+            Return Nothing
+
+        Catch ex As Exception
+            Return Nothing
+            Throw
+        End Try
+    End Function
+
+    Public Shared Async Function GetLastEventLocation(ByVal physicalIds As List(Of String), token As String) As Task(Of List(Of ApiData))
+        Try
+
+            'If Not physicalIds Is Nothing And physicalIds.Any Then
+
+            Dim serviceCode As String = JsonConvert.SerializeObject(physicalIds)
+
+            Dim client = New GraphQLHttpClient(New GraphQLHttpClientOptions With {.EndPoint = New Uri("http://location.integration.satrack.com/api/location")}, New NewtonsoftJsonSerializer())
+
+            client.HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}")
+
+            Dim request = New GraphQLHttpRequest With {
+                .Query = "{ last (serviceCodes: " & serviceCode & ")" &
+                                "{ address, batteryLevel, customerPoint, customerPointDistance, customerPointName, description,  " &
+                                " deviceType, generationDateGMT, direction, id, ignition, latitude, locationStatus, longitude, " &
+                                " samePlaceMinutes, serviceCode, speed, temperature, town, recordDateunifiedEventCode }" &
+                          "}"
+            }
+
+            Dim queryc = request.Query
+
+
+            Dim response = Await client.SendQueryAsync(Of ApiData)(request)
+            'Dim response = Await client.SendQueryAsync(Of Object)(request)
+            If Not response.Data Is Nothing Then
+
+                Dim lista As New List(Of ApiData)
+
+                lista.Add(response.Data)
+
+                Return lista
+
+            End If
+
+            'End If
+
+        Catch ex As Exception
+            Return Nothing
+            Throw
+        End Try
+    End Function
+
+
+    Public Class TokenResult
+        Public Property access_token As String
+    End Class
+
+    Public Class ApiData
+
+        <JsonProperty(PropertyName:="address")>
+        Public Property address As String
+
+        <JsonProperty(PropertyName:="batteryLevel")>
+        Public Property bateryLevel As String
+
+        <JsonProperty(PropertyName:="customerPoint")>
+        Public Property customerPoint As String
+
+        <JsonProperty(PropertyName:="customerPointDistance")>
+        Public Property customerPointDistance As String
+
+        <JsonProperty(PropertyName:="customerPointName")>
+        Public Property customerPointName As String
+
+        <JsonProperty(PropertyName:="description")>
+        Public Property description As String
+
+        <JsonProperty(PropertyName:="deviceType")>
+        Public Property deviceType As String
+
+        <JsonProperty(PropertyName:="generationDateGMT")>
+        Public Property generationDateGMT As String
+
+        <JsonProperty(PropertyName:="direction")>
+        Public Property direction As String
+
+        <JsonProperty(PropertyName:="id")>
+        Public Property id As String
+
+        <JsonProperty(PropertyName:="ignItion")>
+        Public Property ignItion As String
+
+        <JsonProperty(PropertyName:="latitude")>
+        Public Property latitude As String
+
+        <JsonProperty(PropertyName:="locationStatus")>
+        Public Property locationStatus As String
+
+        <JsonProperty(PropertyName:="longitude")>
+        Public Property longitude As String
+
+        <JsonProperty(PropertyName:="samePlaceMinutes")>
+        Public Property samePlaceMinutes As String
+
+        <JsonProperty(PropertyName:="serviceCode")>
+        Public Property serviceCode As String
+
+        <JsonProperty(PropertyName:="speed")>
+        Public Property speed As String
+
+        <JsonProperty(PropertyName:="temperature")>
+        Public Property temperature As String
+
+        <JsonProperty(PropertyName:="town")>
+        Public Property town As String
+
+        <JsonProperty(PropertyName:="recordDateunifiedEventCode")>
+        Public Property recordDateunifiedEventCode As String
+
+    End Class
+
+#End Region
 
 #Region "Funciones auxiliares"
 
-    Private Sub RegistrarVentasTexaco(ByVal IdRegistroVenta As Int64)
-
-        Try
-
-            'Dim ObjDatosEntrada As New ProcesosFleetStar.VentaCombustible
-            'Dim Procesos As New ProcesosFleetStar.ProcesosController
-
-            'Dim CodigoEDS As String = Nothing
-            'Dim Usuario As String = Nothing
-            'Dim Clave As String = Nothing
-            'Dim UrlServicio As String = Nothing
-
-            'Dim RespuestaCT = oHelper.RecuperarCredencialesCreditoTercero(oHelper.RecuperarIdEstacionPorIdRegistroVenta(IdRegistroVenta), 1)
-
-            'For Each oDst As DataRow In RespuestaCT.Tables(0).Rows
-            '    CodigoEDS = oDst("CodigoEDS").ToString()
-            '    Usuario = oDst("Usuario").ToString()
-            '    Clave = oDst("Clave").ToString()
-            '    UrlServicio = oDst("UrlServicio").ToString()
-            'Next
-
-            'Dim oVenta = oHelper.RecuperarVentaCreditoTexaco(IdRegistroVenta)
-            'For Each DatosVenta As DataRow In oVenta.Tables(0).Rows
-
-            '    Dim Detalle As New ProcesosFleetStar.DetalleVentaMaterial
-            '    Dim ListaDetalle As New List(Of ProcesosFleetStar.DetalleVentaMaterial)
-            '    Detalle.Cantidad = CDbl(DatosVenta("Cantidad"))
-            '    Detalle.CodigoMaterial = DatosVenta("CodigoMaterial")
-            '    Detalle.Precio = CDbl(DatosVenta("Precio"))
-            '    Detalle.Total = CDbl(DatosVenta("Total"))
-            '    ListaDetalle.Add(Detalle)
-
-            '    Dim oFormaPago As New ProcesosFleetStar.FormaPago
-            '    Dim ListaFormaPago As New List(Of ProcesosFleetStar.FormaPago)
-            '    oFormaPago.Nombre = DatosVenta("FormaPago").ToString()
-            '    oFormaPago.CodigoSAP = DatosVenta("CodFormaPago")
-            '    oFormaPago.Valor = CDbl(DatosVenta("Total"))
-            '    ListaFormaPago.Add(oFormaPago)
-
-            '    With ObjDatosEntrada
-            '        .CodigoEDS = CodigoEDS
-            '        .CodigoPosicion = DatosVenta("CodCara")
-            '        .FechaHoraFin = DatosVenta("HoraFin")
-            '        .FechaHoraInicio = DatosVenta("HoraInicio")
-            '        .IdAutorizacion = CInt(DatosVenta("Autorizacion"))
-            '        .IdCorteTV = 1
-            '        .IdTurno = CInt(DatosVenta("IdTurno"))
-            '        .IdTurnoHorario = CInt(DatosVenta("NumeroTurno"))
-            '        .Kilometraje = 0
-            '        .LecturaFinal = CDbl(DatosVenta("LecturaFinal"))
-            '        .LecturaInicial = CDbl(DatosVenta("LecturaInicial"))
-            '        .Placa = DatosVenta("Placa")
-            '        .NumeroDocumento = DatosVenta("Recibo")
-            '        .NumeroIdentificador = DatosVenta("ROM")
-            '        .PrecioVentaCliente = CDbl(DatosVenta("Precio"))
-            '        .PrecioVentaEDS = CDbl(DatosVenta("PrecioEDS"))
-            '        .TotalVenta = CDbl(DatosVenta("Total"))
-            '        .VentaManual = False
-            '        .DetalleVentaMaterial = ListaDetalle.ToArray()
-            '        .FormasPago = ListaFormaPago.ToArray()
-            '        .NumeroManifiesto = ""
-            '        .IdentificacionVendedor = DatosVenta("Cedula")
-            '    End With
-            'Next
-
-            'Dim credencials As New ProcesosFleetStar.Credencial
-            'credencials.Usuario = Usuario
-            'credencials.Clave = Clave
-            'credencials.CodigoEDS = CodigoEDS
-
-            'Procesos.CredencialValue = credencials
-            'Procesos.Url = UrlServicio
-
-            'AlmacenarEnArchivo("Enviando venta Texaco, recibo: " & ObjDatosEntrada.NumeroDocumento & " - Autorizacion: " & ObjDatosEntrada.IdAutorizacion.ToString)
-
-            'Dim Respuesta = Procesos.RegistrarVentaCombustible(ObjDatosEntrada)
-            'AlmacenarEnArchivo("Respuesta estado:" & Respuesta.Estado.ToString)
-            'If Respuesta.Estado = ServicesFleetStar.EstadoSolicitud.Procesado Then
-            '    oHelper.ActualizarEstadoVentaCreditoTercero(IdRegistroVenta, True)
-            'Else
-            '    AlmacenarEnArchivo("Respuesta Mensaje:" & Respuesta.Mensaje.ToString)
-            'End If
-
-        Catch Ex As Exception
-            ErrorVentasTexaco = Ex.Message
-            AlmacenarEnArchivo(Ex.Message)
-        Finally
-            ErrorVentasTexaco = False
-        End Try
-    End Sub
-
-    Private Sub RegistrarVentasPetromil(ByVal IdRegistroVenta As Int64)
-
-        Try
-
-            'Dim ObjDatosEntrada As New ServicesFleetStar.VentaCombustible
-            'Dim Procesos As New ServicesFleetStar.ProcesosFleetStar
-
-            'Dim CodigoEDS As String = Nothing
-            'Dim Usuario As String = Nothing
-            'Dim Clave As String = Nothing
-            'Dim UrlServicio As String = Nothing
-
-            'Dim RespuestaCT = oHelper.RecuperarCredencialesCreditoTercero(oHelper.RecuperarIdEstacionPorIdRegistroVenta(IdRegistroVenta), 2)
-
-            'For Each oDst As DataRow In RespuestaCT.Tables(0).Rows
-            '    CodigoEDS = oDst("CodigoEDS").ToString()
-            '    Usuario = oDst("Usuario").ToString()
-            '    Clave = oDst("Clave").ToString()
-            '    UrlServicio = oDst("UrlServicio").ToString()
-            'Next
-
-            'Dim oVenta = oHelper.RecuperarVentaCreditoPetromil(IdRegistroVenta)
-            'For Each DatosVenta As DataRow In oVenta.Tables(0).Rows
-
-            '    Dim Detalle As New ServicesFleetStar.DetalleVentaMaterial
-            '    Dim ListaDetalle As New List(Of ServicesFleetStar.DetalleVentaMaterial)
-            '    Detalle.Cantidad = CDbl(DatosVenta("Cantidad"))
-            '    Detalle.CodigoMaterial = DatosVenta("CodigoMaterial")
-            '    Detalle.Precio = CDbl(DatosVenta("Precio"))
-            '    Detalle.Total = CDbl(DatosVenta("Total"))
-            '    ListaDetalle.Add(Detalle)
-
-            '    Dim oFormaPago As New ServicesFleetStar.FormaPago
-            '    Dim ListaFormaPago As New List(Of ServicesFleetStar.FormaPago)
-            '    oFormaPago.Nombre = "Credito Petromil"
-            '    oFormaPago.CodigoSAP = DatosVenta("CodFormaPago")
-            '    oFormaPago.Valor = CDbl(DatosVenta("Total"))
-            '    ListaFormaPago.Add(oFormaPago)
-
-            '    With ObjDatosEntrada
-            '        .CodigoEDS = CodigoEDS
-            '        '.CodigoPosicion = "01"
-            '        .CodigoPosicion = DatosVenta("CodCara")
-            '        .FechaHoraFin = DatosVenta("HoraFin")
-            '        .FechaHoraInicio = DatosVenta("HoraInicio")
-            '        .IdAutorizacion = CInt(DatosVenta("Autorizacion"))
-            '        .IdCorteTV = 1
-            '        .IdTurno = CInt(DatosVenta("IdTurno"))
-            '        .IdTurnoHorario = CInt(DatosVenta("NumeroTurno"))
-            '        .Kilometraje = 0
-            '        .LecturaFinal = CDbl(DatosVenta("LecturaFinal"))
-            '        .LecturaInicial = CDbl(DatosVenta("LecturaInicial"))
-            '        .Placa = DatosVenta("Placa")
-            '        .NumeroDocumento = DatosVenta("Recibo")
-            '        .NumeroIdentificador = DatosVenta("ROM")
-            '        .PrecioVentaCliente = CDbl(DatosVenta("Precio"))
-            '        .PrecioVentaEDS = CDbl(DatosVenta("PrecioEDS"))
-            '        .TotalVenta = CDbl(DatosVenta("Total"))
-            '        .VentaManual = False
-            '        .DetalleVentaMaterial = ListaDetalle.ToArray()
-            '        .FormasPago = ListaFormaPago.ToArray()
-            '        .NumeroManifiesto = ""
-            '        .IdentificacionVendedor = DatosVenta("Cedula")
-            '    End With
-
-            '    AlmacenarEnArchivo("Enviando venta Petromil, recibo: " & ObjDatosEntrada.NumeroDocumento & " - Autorizacion: " & ObjDatosEntrada.IdAutorizacion.ToString)
-            'Next
-
-            'Dim Json = JsonConvert.SerializeObject(ObjDatosEntrada)
-            'AlmacenarEnArchivo(Json)
-            'Dim credencials As New ServicesFleetStar.Credencial
-            'credencials.Usuario = Usuario
-            'credencials.Clave = Clave
-            'credencials.CodigoEDS = CodigoEDS
-
-            'Procesos.CredencialValue = credencials
-            'Procesos.Url = UrlServicio
-
-
-
-            'Dim Respuesta = Procesos.RegistrarVentaCombustible(ObjDatosEntrada)
-            'AlmacenarEnArchivo("Respuesta estado:" & Respuesta.Estado.ToString)
-            'If Respuesta.Estado = ServicesFleetStar.EstadoSolicitud.Procesado Then
-            '    oHelper.ActualizarEstadoVentaCreditoTercero(IdRegistroVenta, True)
-            'Else
-            '    AlmacenarEnArchivo("Respuesta estado:" & Respuesta.Mensaje.ToString)
-            'End If
-
-        Catch Ex As Exception
-            ErrorVentasTexaco = Ex.Message
-            AlmacenarEnArchivo(Ex.Message)
-        Finally
-            ErrorVentasTexaco = False
-        End Try
-    End Sub
 
     Function ValidarTamanoArchivo(ByVal rutaFichero As String) As Long
         Try
@@ -363,56 +455,6 @@ Public Class CoreServicio
 
 
 #End Region
-    ''' <summary>
-    ''' Recibe 1 para el temporizador de consulta y 0 para el temporizador de envio
-    ''' </summary>
-    ''' <param name="TipoTimer"></param>
-    ''' <remarks></remarks>
 
-    Private Sub IniciarTimer()
-        Try
-
-            If Not TimerEnvio Is Nothing Then
-                TimerEnvio.Dispose()
-                TimerEnvio = Nothing
-            End If
-
-
-            TimerEnvio = New Timers.Timer
-            AddHandler TimerEnvio.Elapsed, AddressOf TimerEnvio_Elapsed
-            TimerEnvio.Interval = My.Settings.Timer
-            TimerEnvio.Enabled = True
-        Catch ex As Exception
-            Try
-                AlmacenarEnArchivo("Error en IniciarTimer: " & ex.Message)
-            Catch
-
-            End Try
-        End Try
-    End Sub
-
-
-    Private Sub TimerEnvio_Elapsed(sender As Object, e As Timers.ElapsedEventArgs) Handles TimerEnvio.Elapsed
-        Try
-            TimerEnvio.Enabled = False
-            ConsultarVehiculosEnRuta()
-        Catch ex As Exception
-            AlmacenarEnArchivo("Error en TimerEnvio_Elapsed: " & ex.Message)
-        Finally
-            IniciarTimer()
-        End Try
-    End Sub
-
-    Private Sub EscribirMensaje(ByVal Texto As String)
-        Try
-            If My.Settings.RastrearTareas Then
-                Mensaje = Texto
-                'txtMensajes.BeginInvoke(New MethodInvoker(AddressOf Rastrear))
-            End If
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-    End Sub
 
 End Class
