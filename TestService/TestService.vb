@@ -1,5 +1,6 @@
 ﻿Imports System.Threading
 Imports ServicioComunicadorTGN
+Imports Facturacion
 
 
 
@@ -10,6 +11,7 @@ Module TestService
 
         Dim oCore As New ServicioComunicadorTGN.CoreServicio 'Autorizador
 
+        'Dim api As New Facturacion.GetApiSatrack
 
         While True
             Thread.Sleep(10000)
