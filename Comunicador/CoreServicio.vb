@@ -15,6 +15,8 @@ Imports Newtonsoft.Json.Linq
 Imports GraphQL.Client.Http
 Imports GraphQL
 Imports GraphQL.Client.Serializer.Newtonsoft
+Imports RestSharp
+Imports gasolutions.Factory
 
 Public Class CoreServicio
 
@@ -47,8 +49,11 @@ Public Class CoreServicio
 
     Public Sub Incializar()
         Try
-            'Prueba  comunicador
+            ' Dim res = ServiceApis.GetKilometraje()
 
+            'Dim llerres = res.Result
+
+            'Prueba  comunicador
             EnviarDatosTMS()
 
             TimerEnvio = New Timers.Timer
@@ -292,7 +297,7 @@ Public Class CoreServicio
 
             Dim request = New GraphQLHttpRequest With {
                     .Query = "{ last(serviceCodes: " + serviceCode + ")" + "{ address,batteryLevel,customerPoint,customerPointDistance,description," + " 
-                                                                          deviceType, generationDateGMT, direction, id, ignition, latitude, locationStatus, longitude" + "
+                                                                          deviceType, generationDateGMT, direction, id, ignition, latitude, locationStatus, longitude," + "
                                                                           samePlaceMinutes, serviceCode, speed, temperature, town, vehicleStatus, unifiedEventCode,recordDate
                           } }"
                    }
@@ -328,7 +333,7 @@ Public Class CoreServicio
 
             Dim request = New GraphQLHttpRequest With {
                     .Query = "{ last(serviceCodes: [] ){ address,batteryLevel,customerPoint,customerPointDistance,description," + " 
-                                                                          deviceType, generationDateGMT, direction, id, ignition, latitude, locationStatus, longitude" + "
+                                                                          deviceType, generationDateGMT, direction, id, ignition, latitude, locationStatus, longitude," + "
                                                                           samePlaceMinutes, serviceCode, speed, temperature, town, vehicleStatus, unifiedEventCode,recordDate
                           } }"
                    }
@@ -350,15 +355,93 @@ Public Class CoreServicio
 
 
 
+    Public Shared Async Function GetKilometraje() As Task(Of String)
+        Try
+
+
+            Dim oHelper As New DataAccess.DA
+
+            'Obtener token
+            Dim token As String = GetToken()
+
+            Dim UrlApiSatrack As String = oHelper.RecuperarParametro("UrlApiSatrack")
+
+            Dim placa As String = JsonConvert.SerializeObject("JKU006")
+            Dim fechainicial As String = JsonConvert.SerializeObject("2021/03/15 10:00:00")
+            Dim fechafinal As String = JsonConvert.SerializeObject("2021/03/19 18:00:00")
+
+
+            Dim client = New GraphQLHttpClient(New GraphQLHttpClientOptions With {.EndPoint = New Uri(UrlApiSatrack)}, New NewtonsoftJsonSerializer())
+
+            client.HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}")
+
+            Dim request = New GraphQLHttpRequest With {
+                    .Query = "{ byDate " +
+                              "(serviceCode: " + placa + ", currentPage: 1 , itemsPerPage: 1," +
+                              "initialDate: " + fechainicial + ", endDate: " + fechafinal + ")" +
+                              "{ pagination{ currentPage }events{ odometer }}" +
+                              "}"
+                    }
+
+
+            Try
+
+                ' Dim response = Await client.SendQueryAsync(Of LocationResponseDate)(request)
+                Dim response = Await client.SendQueryAsync(Of LocationResponseDate)(request)
+
+                Dim op2 = response.Data
+                Dim op3 = response.Errors
+                Dim op4 = response.Extensions
+
+                If response.AsGraphQLHttpResponse.StatusCode = 200 Then
+                    If Not response.Data Is Nothing Then
+                        Return response.Data.LocationEventsDate.events.FirstOrDefault.odometer.ToString()
+                    End If
+                End If
+
+            Catch ex As Exception
+                Dim m = ex.Message
+            End Try
+
+
+            Return Nothing
+
+        Catch ex As Exception
+
+            Return Nothing
+            Throw
+        End Try
+    End Function
+
+
     Public Class TokenResult
         Public Property access_token As String
+    End Class
+
+    Public Class LocationResponseDate
+
+        <JsonProperty("byDate")>
+        Public Property LocationEventsDate As ByDate
+
+    End Class
+
+    Public Class ByDate
+        Public Property pagination As Pagination
+        Public Property events As IList(Of Events)
+    End Class
+
+    Public Class Pagination
+        Public Property currentPage As Integer
+    End Class
+
+    Public Class Events
+        Public Property odometer As Double
     End Class
 
     Public Class LocationResponse
         <JsonProperty("last")>
         Public Property LocationEvents As List(Of LocationEvent)
     End Class
-
 
     Public Class LocationEvent
 
@@ -427,7 +510,6 @@ Public Class CoreServicio
 
         <JsonProperty("recordDate")>
         Public Property FechaEvento As String
-
 
     End Class
 

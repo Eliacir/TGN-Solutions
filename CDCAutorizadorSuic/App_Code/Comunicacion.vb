@@ -19,7 +19,8 @@ Public Class Comunicacion
     Public Function GetDistanceBetweenDates(ByVal Placa As String, ByVal FechaInicial As DateTime, ByVal FechaFinal As DateTime) As String
         Dim respuesta As String = ""
         Dim oHelper As New Gasolutions.DataAccess.DA
-        Dim Comunicacion As New Satrack.getEvents
+        Dim service As New Gasolutions.DataAccess.ServiceApis
+        'Dim Comunicacion As New Satrack.getEvents
         Dim Kilometros As Long
         Try
             If FechaFinal < FechaInicial Then
@@ -30,19 +31,8 @@ Public Class Comunicacion
                 Throw New System.Exception("El rango entre las fechas no debe ser mayor a 48 horas.")
             End If
 
-            Dim usuario = oHelper.RecuperarParametro("UsuarioSatrack")
-            Dim clave = oHelper.RecuperarParametro("PasswordSatrack")
-            Dim credenciales As ICredentials = New NetworkCredential(usuario, clave)
-            Dim DataSet = Comunicacion.GetKilometer(usuario, clave, Placa, DatePart("yyyy", FechaInicial), DatePart("m", FechaInicial), DatePart("d", FechaInicial), DatePart("h", FechaInicial), DatePart("n", FechaInicial), DatePart("s", FechaInicial), DatePart("yyyy", FechaFinal), DatePart("m", FechaFinal), DatePart("d", FechaFinal), DatePart("h", FechaFinal), DatePart("n", FechaFinal), DatePart("s", FechaFinal))
-            Dim cont = 0
-            For i = 0 To DataSet.Tables.Count() - 1
-                For Each oDatos As DataRow In DataSet.Tables(i).Rows
-                    Kilometros = CLng(oDatos("Kilometros").ToString())
-                Next
-            Next
-            Kilometros = Kilometros * 1000
-            respuesta = Kilometros.ToString()
-
+            Dim res = service.GetKilometraje(Placa, FechaInicial, FechaFinal)
+            respuesta = res.Result
 
         Catch ex As SoapException
             respuesta = ex.Message
@@ -56,41 +46,26 @@ Public Class Comunicacion
     Public Function GetAllVehicles() As List(Of Vehiculo)
         Dim respuesta As New List(Of Vehiculo)
         Dim oHelper As New Gasolutions.DataAccess.DA
-        Dim Comunicacion As New Satrack.getEvents
+        Dim service As New Gasolutions.DataAccess.ServiceApis
+        'Dim Comunicacion As New Satrack.getEvents
         Try
 
-
-            Dim usuario = oHelper.RecuperarParametro("UsuarioSatrack")
-            Dim claveopcional = oHelper.RecuperarParametro("ClaveOpcionalSatrack")
-            Dim clave = oHelper.RecuperarParametro("PasswordSatrack")
-            Dim NroRegistros = CInt(oHelper.RecuperarParametro("NroRegistros"))
-
-            'Dim usuario = "operacionesbaq"
-            'Dim clave = "Barranquilla2020+"
-
-            Dim credenciales As ICredentials = New NetworkCredential(usuario, clave)
-            Dim DataSet = Comunicacion.retrieveEventsByIDV3(usuario, clave, "*", "21", CLng(claveopcional), NroRegistros)
-            Dim cont = 0
-            If DataSet Is Nothing Then
-                Throw New System.Exception("No se encontraron datos.")
-            End If
-            For i = 0 To DataSet.Tables.Count() - 1
-                For Each oDatos As DataRow In DataSet.Tables(i).Rows
-                    If oHelper.TMS_ExisteVehiculoARA(oDatos("Placa").ToString()) Then
-                        Dim oVehiculo As New Vehiculo
-                        oVehiculo.Placa = oDatos("Placa")
-                        oVehiculo.Latitud = oDatos("Latitud")
-                        oVehiculo.Longitud = oDatos("Longitud")
-                        oVehiculo.Velocidad = oDatos("Velocidad")
-                        oVehiculo.Ubicacion = oDatos("Ubicacion")
-                        oVehiculo.FechaHora_GPS = oDatos("FechaHora_GPS")
-                        oVehiculo.Estado_Ignicion = True
-                        If oDatos("Estado_Ignicion").ToString() = "Apagado" Then
-                            oVehiculo.Estado_Ignicion = False
-                        End If
-                        respuesta.Add(oVehiculo)
+            Dim res = service.GetLastEventLocationAllVehicle()
+            For Each oDatos In res.Result
+                If oHelper.TMS_ExisteVehiculoARA(oDatos.Placa) Then
+                    Dim oVehiculo As New Vehiculo
+                    oVehiculo.Placa = oDatos.Placa
+                    oVehiculo.Latitud = oDatos.Latitud
+                    oVehiculo.Longitud = oDatos.Longitud
+                    oVehiculo.Velocidad = oDatos.Velodcidad
+                    oVehiculo.Ubicacion = oDatos.EstadoUbicacion
+                    oVehiculo.FechaHora_GPS = oDatos.GenerationDateGMT
+                    oVehiculo.Estado_Ignicion = True
+                    If oDatos.Estado = "0" Then
+                        oVehiculo.Estado_Ignicion = False
                     End If
-                Next
+                    respuesta.Add(oVehiculo)
+                End If
             Next
             Return respuesta
         Catch ex As SoapException
