@@ -58,7 +58,7 @@ Public Class Comunicacion
                     oVehiculo.Latitud = oDatos.Latitud
                     oVehiculo.Longitud = oDatos.Longitud
                     oVehiculo.Velocidad = oDatos.Velodcidad
-                    oVehiculo.Ubicacion = oDatos.EstadoUbicacion
+                    oVehiculo.Ubicacion = oDatos.DireccionAddres & " " & oDatos.Ciudad & " " & oDatos.Direccion
                     oVehiculo.FechaHora_GPS = oDatos.GenerationDateGMT
                     oVehiculo.Estado_Ignicion = True
                     If oDatos.Estado = "0" Then
